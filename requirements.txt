@@ -1,0 +1,3 @@
+ollama
+textual
+pydantic_settings

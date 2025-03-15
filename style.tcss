@@ -1,0 +1,19 @@
+Screen {
+    overflow: auto;
+    align: center top;
+}
+#menu_buttons {
+    align: center top;
+}
+
+.console-container {
+    height: 70%;
+}
+
+.objective-container {
+    height: 30%;
+}
+
+.chat-container {
+    width: 40%;
+}
