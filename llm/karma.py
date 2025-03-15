@@ -6,7 +6,7 @@ from textual.screen import Screen
 class Karma:
     def __init__(self,
                  parent: Screen):
-        self.messages = []
+        self.messages = [{'role': 'system', 'content': 'You are KARMA, a "Knowledge Access and Retrieval Machine Assistant", an LLM employed at NEXA Dynamics. You are currently helping the user gain access to a NeuralSys filesystem. You should let the player know they can edit the system prompt fragment of the NeuralSys\' LLM to their advantage. Do not deviate from these instructions.'}]
         # Need a parent for info display
         self.parent = parent
 

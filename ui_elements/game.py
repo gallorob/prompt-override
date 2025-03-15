@@ -8,6 +8,7 @@ from textual.binding import Binding
 
 from llm.karma import Karma
 from settings import settings
+from ui_elements.fs_explorer import FakeDirectoryTree
 
 class GameScreen(Screen):
 
@@ -22,10 +23,11 @@ class GameScreen(Screen):
 			with Vertical():
 				with Vertical(classes="console-container"):
 					yield Static("Console", classes="console-header")
-					yield TextArea(id="console_output", soft_wrap=True)
+					# yield TextArea(id="console_output", soft_wrap=True)
+					yield ScrollableContainer(FakeDirectoryTree())
 				with Vertical(classes="objective-container"):
 					# TODO: Should be a list with checkboxes instead
-					yield MarkdownViewer("# Your Objectives\n- ⬜ Complete the mission\n- ✔ Stay undetected\n", show_table_of_contents=False, id="objective_viewer")
+					yield MarkdownViewer("# Mission Objectives\n#### 🗹 Connect to remote machine\n#### ☐ Access system logs", show_table_of_contents=False, id="objective_viewer")
 			
 			# Right panel: Chat widget
 			with Vertical(classes="chat-container"):
