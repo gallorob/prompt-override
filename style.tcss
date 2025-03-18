@@ -17,3 +17,10 @@ Screen {
 .chat-container {
     width: 40%;
 }
+
+#editor {
+    width: 60;
+    height: 40;
+    border: thick $background 80%;
+    background: $surface;
+}

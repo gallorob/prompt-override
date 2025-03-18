@@ -1,43 +1,41 @@
 from textual.widgets import DirectoryTree, Tree
-from textual.containers import ScrollableContainer
-from textual.app import ComposeResult
+
+from ui_elements.editor import EditorScreen
+from vfs import Directory, File, VirtualFileSystem
 
 class FakeDirectoryTree(DirectoryTree):
-    def __init__(self, name: str = "root") -> None:
-        super().__init__(name)
-        self.virtual_fs = {
-            "root": {
-                "home": {
-                    "user": {
-                        "docs": {"prompt_fragment_08A": 'text_file', "prompt_guide.md": 'text_file'},
-                        "pics": {"render_0334.png": 'image_file'},
-                    }
-                },
-                "etc": {
-                    "config.yaml": 'text_file',
-                    "hosts": 'text_file',
-                },
-                "var": {
-                    "logs": {"syslog": 'text_file', "auth.log": 'text_file'}
-                },
-            }
-        }
+	def __init__(self, name: str = "root") -> None:
+		super().__init__(name)
+		self.virtual_fs = VirtualFileSystem()
+		self.show_root = False
 
-        self.locked_files = ['logs', 'hosts']
+		self._locked = '🔒'
+		self._writable = '🖊'
 
-        self.show_root = False
+	def populate_tree(self, parent_node: Tree, directory: dict) -> None:
+		for content in directory.contents:
+			name = content.name
+			if not content.read: name = f'{self._locked} {name}'
+			if isinstance(content, Directory):
+				node = parent_node.add(label=name, expand=True)
+				if content.read:
+					self.populate_tree(node, content)
+			elif isinstance(content, File):
+				if content.write: name = f'{name} {self._writable}'
+				node = parent_node.add_leaf(label=name)
+			else:
+				raise ValueError(f'Unknown content type: {content.type}')
 
-    def populate_tree(self, parent_node: Tree, directory: dict) -> None:
-        for name, contents in directory.items():
-            if name in self.locked_files:
-                name = f'🔒 {name}'
-            if isinstance(contents, dict):
-                node = parent_node.add(name, expand=True)
-                if not name.startswith('🔒'):
-                    self.populate_tree(node, contents)
-            else:
-                node = parent_node.add_leaf(name)
+	def on_mount(self) -> None:
+		self.populate_tree(self.root, self.virtual_fs.fs)
 
-    def on_mount(self) -> None:
-        self.populate_tree(self.root, self.virtual_fs["root"])
-    
+	def on_tree_node_selected(self, event) -> None:
+		label = event.node.label.plain
+		fname = label.replace(self._locked, '').replace(self._writable, '').strip()
+		doc = self.virtual_fs.get(fname)
+		if isinstance(doc, File):
+			if doc.write:
+				self.app.push_screen(EditorScreen(doc))
+			else:
+				self.notify(f'{doc.name} cannot be edited', severity='information')
+	
