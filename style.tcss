@@ -20,7 +20,14 @@ Screen {
 
 #editor {
     width: 60;
-    height: 25;
+    height: 30;
+    border: thick $background 80%;
+    background: $surface;
+}
+
+#viewer {
+    width: 60;
+    height: 30;
     border: thick $background 80%;
     background: $surface;
 }

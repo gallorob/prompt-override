@@ -3,7 +3,7 @@ import threading
 from textual.screen import Screen
 from textual.app import ComposeResult
 from textual.containers import Horizontal, Vertical, ScrollableContainer
-from textual.widgets import Static, Footer, Input, MarkdownViewer, TextArea
+from textual.widgets import Static, Footer, Input, MarkdownViewer, Header
 from textual.binding import Binding
 
 from llm.karma import Karma
@@ -11,6 +11,9 @@ from settings import settings
 from ui_elements.fs_explorer import FakeDirectoryTree
 
 class GameScreen(Screen):
+	def __init__(self, level_name: str = 'Access Escalation'):
+		super().__init__()
+		self.title = f'Level #1: {level_name}'
 
 	BINDINGS = [
 		Binding(key='escape', action='quit', description='Back to main menu', priority=True)
@@ -18,6 +21,10 @@ class GameScreen(Screen):
 
 	def compose(self) -> ComposeResult:
 		self.karma = Karma(parent=self)
+
+		yield Header(show_clock=True,
+			   		 icon='')
+
 		with Horizontal():
 			# Left panel: Console and Objectives
 			with Vertical():

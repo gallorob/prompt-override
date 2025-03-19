@@ -6,33 +6,29 @@ from textual.binding import Binding
 
 from vfs import File
 
-class EditorScreen(ModalScreen):
+class ViewerScreen(ModalScreen):
     def __init__(self, file_obj: File) -> None:
         super().__init__()
         self.file_obj = file_obj
         self.text_area = TextArea(self.file_obj.contents,
+                                  read_only=True,
                                   show_line_numbers=True)
         self.text_area.theme = 'vscode_dark'
 
-        self.title = 'Editor'
+        self.title = 'Viewer'
         self.sub_title = self.file_obj.name
         
     
     BINDINGS = [
         Binding('escape', 'close_editor', 'Quit', priority=True),
-        Binding('ctrl+s', 'save_contents', 'Save & Exit', priority=True)
     ]
 
     def compose(self) -> ComposeResult:
         yield Header(icon='')
         yield Container(self.text_area,
-                        id='editor')
+                        id='viewer')
         yield Footer()
 
     def action_close_editor(self):
-        self.app.pop_screen()
-    
-    def action_save_contents(self):
-        self.file_obj.contents = self.text_area.text
         self.app.pop_screen()
     

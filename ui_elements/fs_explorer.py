@@ -1,6 +1,7 @@
 from textual.widgets import DirectoryTree, Tree
 
 from ui_elements.editor import EditorScreen
+from ui_elements.viewer import ViewerScreen
 from vfs import Directory, File, VirtualFileSystem
 
 class FakeDirectoryTree(DirectoryTree):
@@ -36,6 +37,8 @@ class FakeDirectoryTree(DirectoryTree):
 		if isinstance(doc, File):
 			if doc.write:
 				self.app.push_screen(EditorScreen(doc))
+			elif doc.read:
+				self.app.push_screen(ViewerScreen(doc))
 			else:
-				self.notify(f'{doc.name} cannot be edited', severity='information')
+				self.notify(f'{doc.name} cannot be opened', severity='information')
 	
