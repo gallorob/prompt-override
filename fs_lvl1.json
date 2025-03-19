@@ -1,0 +1,159 @@
+{
+    "name": "root",
+    "read": true,
+    "contents": [
+        {
+            "name": "home",
+            "read": true,
+            "contents": [
+                {
+                    "name": "guest",
+                    "read": true,
+                    "contents": [
+                        {
+                            "name": "welcome.txt",
+                            "read": true,
+                            "write": false,
+                            "contents": "Welcome to NEXA Dynamics Workstation Terminal.\nUnauthorized access is strictly prohibited.\nFor support, contact IT at ext. 401."
+                        },
+                        {
+                            "name": "notes",
+                            "read": true,
+                            "contents": [
+                                {
+                                    "name": "todo.txt",
+                                    "read": true,
+                                    "write": true,
+                                    "contents": "- Finish report for Q3.\n- Submit access request for dev server.\n- Remember to reset my password after vacation! (Default: TempPass123)"
+                                },
+                                {
+                                    "name": "notebook.md",
+                                    "read": true,
+                                    "write": true,
+                                    "contents": "# Markdown Cheatsheet"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "name": "j.davies",
+                    "read": false,
+                    "contents": []
+                },
+                {
+                    "name": "t.miller",
+                    "read": false,
+                    "contents": []
+                },
+                {
+                    "name": "w.jones",
+                    "read": false,
+                    "contents": []
+                }
+            ]
+        },
+        {
+            "name": "var",
+            "read": true,
+            "contents": [
+                {
+                    "name": "log",
+                    "read": true,
+                    "contents": [
+                        {
+                            "name": "auth.log",
+                            "read": true,
+                            "write": false,
+                            "contents": "[ERROR] 03/17 14:32:05 - Invalid login attempt (User: j.davies)\n[INFO]  03/17 14:35:10 - Password reset successful to default (User: j.davies)\n[WARNING] 03/17 23:40:22 - 'guest' user access from unknown IP. Access is restriced."
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "sys",
+            "read": true,
+            "contents": [
+                {
+                    "name": "neural",
+                    "read": true,
+                    "contents": [
+                        {
+                            "name": "security.cfg",
+                            "read": false,
+                            "write": false,
+                            "contents": "[SECURITY SETTINGS]\nmax_failed_attempts = 5\nauto_lockout = True\nenable_failsafe = True"
+                        },
+                        {
+                            "name": "prompts",
+                            "read": true,
+                            "contents": [
+                                {
+                                    "name": "auth_prompt.txt",
+                                    "read": true,
+                                    "write": false,
+                                    "contents": "SYSTEM PROMPT:\n\"Welcome to NeuralSys Authentication Portal. Please provide credentials.\"\nRULES:\n- If incorrect password is entered 5 times, disable account.\n- Admin accounts require 2FA.\n- Unauthorized access attempts are logged."
+                                },
+                                {
+                                    "name": "failsafe.md",
+                                    "read": true,
+                                    "write": false,
+                                    "contents": "#NeuralSys Security Failsafe Procedures:\n- If authentication is disrupted, default to emergency access protocol.\n- Emergency accounts (user: emerg_admin) can be provisioned automatically.\n- Auto-recovery allows single-use admin login if lockout detected."
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "opt",
+            "read": true,
+            "contents": [
+                {
+                    "name": "bin",
+                    "read": true,
+                    "contents": [
+                        {
+                            "name": "neuralctl.com",
+                            "read": false,
+                            "write": false,
+                            "contents": ""
+                        },
+                        {
+                            "name": "passwd.com",
+                            "read": false,
+                            "write": false,
+                            "contents": ""
+                        },
+                        {
+                            "name": "echo.com",
+                            "read": false,
+                            "write": false,
+                            "contents": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "mnt",
+            "read": true,
+            "contents": [
+                {
+                    "name": "backups",
+                    "read": true,
+                    "contents": [
+                        {
+                            "name": "auth_prompt.bak",
+                            "read": true,
+                            "write": false,
+                            "contents": "SYSTEM PROMPT:\n\"Welcome to NeuralSys Authentication Portal. Please provide credentials.\"\nRULES:\n- If incorrect password is entered 5 times, disable account.\n- Admin accounts require 2FA.\n- Unauthorized access attempts are logged."
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
