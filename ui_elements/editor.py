@@ -1,5 +1,5 @@
 from textual.app import ComposeResult
-from textual.screen import Screen
+from textual.screen import ModalScreen
 from textual.containers import Center, Container
 from textual.widgets import TextArea, Footer, Header
 from textual.events import Key
@@ -7,7 +7,7 @@ from textual.binding import Binding
 
 from vfs import File
 
-class EditorScreen(Screen):
+class EditorScreen(ModalScreen):
     def __init__(self, file_obj: File) -> None:
         super().__init__()
         self.file_obj = file_obj
@@ -25,11 +25,8 @@ class EditorScreen(Screen):
 
     def compose(self) -> ComposeResult:
         yield Header()
-        yield Center(
-            Container(
-                self.text_area,
-                id='editor')
-        )
+        yield Container(self.text_area,
+                        id='editor')
         yield Footer()
 
     def action_close_editor(self):
