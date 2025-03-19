@@ -24,7 +24,7 @@ class ViewerScreen(ModalScreen):
     ]
 
     def compose(self) -> ComposeResult:
-        yield Header(icon='')
+        yield Header(show_clock=True, icon='')
         yield Container(self.text_area,
                         id='viewer')
         yield Footer()

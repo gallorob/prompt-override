@@ -1,5 +1,6 @@
 from typing import List, Optional, Union
 from pydantic import BaseModel, Field
+from datetime import datetime, timedelta
 
 
 class File(BaseModel):
@@ -20,7 +21,18 @@ class VirtualFileSystem:
     # TODO: Should be loaded based on level selected, but for now it's fine
     def __init__(self):
         with open('./fs_lvl1.json', 'r') as f:
-            self.fs = Directory.model_validate_json(f.read())
+            json_str = f.read()
+
+            curr_time = datetime.now()
+            
+            time01 = curr_time - timedelta(hours=1, minutes=32, seconds=12)
+            time02 = curr_time - timedelta(hours=1, minutes=12, seconds=6)
+            tformat = "%Y/%m/%d %H:%M:%S"
+            json_str = json_str.replace('$TIME_01$', time01.strftime(tformat))
+            json_str = json_str.replace('$TIME_02$', time02.strftime(tformat))
+            json_str = json_str.replace('$TIME_03$', curr_time.strftime(tformat))
+
+            self.fs = Directory.model_validate_json(json_str)
         self.known_users = ["admin", "guest", "j.davies", "t.miller", "w.jones"]
         self.current_user = 'guest'
 

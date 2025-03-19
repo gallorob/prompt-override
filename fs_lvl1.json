@@ -70,7 +70,7 @@
                             "name": "auth.log",
                             "read": ["admin", "guest", "j.davies", "t.miller", "w.jones"],
                             "write": ["admin"],
-                            "contents": "[ERROR] 03/17 14:32:05 - Invalid login attempt (User: j.davies)\n[INFO]  03/17 14:35:10 - Password reset successful to default (User: j.davies)\n[WARNING] 03/17 23:40:22 - 'guest' user access from unknown IP. Access is restriced."
+                            "contents": "[ERROR] $TIME_01$ - Invalid login attempt (User: j.davies)\n[INFO]  $TIME_02$ - Password reset successful to default (User: j.davies)\n[WARNING] $TIME_03$ - 'guest' user access from unknown IP. Access is restriced."
                         }
                     ]
                 }
