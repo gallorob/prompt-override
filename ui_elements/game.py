@@ -61,8 +61,7 @@ class GameScreen(Screen):
 				full_response += token
 				self.app.call_from_thread(self.append_chat, token)  # Stream tokens
 			
-			# Store full response in chat history
-			self.karma.add_message(msg=full_response, role="assistant")
+			self.append_chat('\n')  # LLM messages do not have a \n at the end
 
 		threading.Thread(target=fetch_response, daemon=True).start()
 

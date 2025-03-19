@@ -2,8 +2,8 @@ from pydantic import Field
 from pydantic_settings import BaseSettings
 
 class LLMSetting(BaseSettings):
-    model_name: str = Field(default='gemma3:4b', description='The name of the LLM model to use.')
-    prompt: str = Field(default='...', description='The system prompt to use.')
+    model_name: str = Field(default='hermes3:latest', description='The name of the LLM model to use.')
+    prompt: str = Field(default='./llm/karma_prompt', description='The system prompt to use.')
     temperature: float = Field(default=0.6, gt=0.0, lt=1.0, description='The LLM temperature')
     top_p: float = Field(default=0.2, gt=0.0, lt=1.0, description='The LLM top probability')
     top_k: int = Field(default=10, gt=0, description='The LLM top-k')

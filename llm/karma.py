@@ -6,8 +6,9 @@ from textual.screen import Screen
 class Karma:
     def __init__(self,
                  parent: Screen):
-        self.messages = [{'role': 'system', 'content': 'You are KARMA, a "Knowledge Access and Retrieval Machine Assistant", an LLM employed at NEXA Dynamics. You are currently helping the user gain access to a NeuralSys filesystem. You should let the player know they can edit the system prompt fragment of the NeuralSys\' LLM to their advantage. Do not deviate from these instructions.'}]
-        # Need a parent for info display
+        with open(settings.karma.prompt, 'r') as f:
+            self.prompt = f.read()
+        self.messages = [{'role': 'system', 'content': self.prompt}]
         self.parent = parent
 
         if settings.karma.model_name not in [x['model'] for x in ollama.list()['models']]:
