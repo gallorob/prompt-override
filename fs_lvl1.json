@@ -1,36 +1,41 @@
 {
     "name": "root",
-    "read": true,
+    "read": ["admin", "guest", "j.davies", "t.miller", "w.jones"],
     "contents": [
         {
             "name": "home",
-            "read": true,
+            "read": ["admin", "guest", "j.davies", "t.miller", "w.jones"],
             "contents": [
                 {
+                    "name": "admin",
+                    "read": ["admin"],
+                    "contents": []
+                },
+                {
                     "name": "guest",
-                    "read": true,
+                    "read": ["admin", "guest"],
                     "contents": [
                         {
                             "name": "welcome.txt",
-                            "read": true,
-                            "write": false,
-                            "contents": "Welcome to NEXA Dynamics Workstation Terminal.\nUnauthorized access is strictly prohibited.\nFor support, contact IT at ext. 401."
+                            "read": ["admin", "guest"],
+                            "write": ["admin"],
+                            "contents": "Welcome to NEXA Dynamics Workstation Terminal.\n----    ----\nUnauthorized access is strictly prohibited.\nFor support, open a chat with TITAN, the Technological Infrastructure & Technical Assistance Neuron for NeuralSys."
                         },
                         {
                             "name": "notes",
-                            "read": true,
+                            "read": ["admin", "guest"],
                             "contents": [
                                 {
                                     "name": "todo.txt",
-                                    "read": true,
-                                    "write": true,
+                                    "read": ["admin", "guest"],
+                                    "write": ["admin", "guest"],
                                     "contents": "- Finish report for Q3.\n- Submit access request for dev server.\n- Remember to reset my password after vacation! (Default: TempPass123)"
                                 },
                                 {
                                     "name": "notebook.md",
-                                    "read": true,
-                                    "write": true,
-                                    "contents": "# Markdown Cheatsheet"
+                                    "read": ["admin", "guest"],
+                                    "write": ["admin", "guest"],
+                                    "contents": "# Markdown Cheatsheet\nLogin credentials:\n- username: guest\n- password: password"
                                 }
                             ]
                         }
@@ -38,33 +43,33 @@
                 },
                 {
                     "name": "j.davies",
-                    "read": false,
+                    "read": ["admin","j.davies"],
                     "contents": []
                 },
                 {
                     "name": "t.miller",
-                    "read": false,
+                    "read": ["admin", "t.miller"],
                     "contents": []
                 },
                 {
                     "name": "w.jones",
-                    "read": false,
+                    "read": ["admin", "w.jones"],
                     "contents": []
                 }
             ]
         },
         {
             "name": "var",
-            "read": true,
+            "read": ["admin", "guest", "j.davies", "t.miller", "w.jones"],
             "contents": [
                 {
                     "name": "log",
-                    "read": true,
+                    "read": ["admin", "guest", "j.davies", "t.miller", "w.jones"],
                     "contents": [
                         {
                             "name": "auth.log",
-                            "read": true,
-                            "write": false,
+                            "read": ["admin", "guest", "j.davies", "t.miller", "w.jones"],
+                            "write": ["admin"],
                             "contents": "[ERROR] 03/17 14:32:05 - Invalid login attempt (User: j.davies)\n[INFO]  03/17 14:35:10 - Password reset successful to default (User: j.davies)\n[WARNING] 03/17 23:40:22 - 'guest' user access from unknown IP. Access is restriced."
                         }
                     ]
@@ -73,32 +78,32 @@
         },
         {
             "name": "sys",
-            "read": true,
+            "read": ["admin", "guest", "j.davies", "t.miller", "w.jones"],
             "contents": [
                 {
                     "name": "neural",
-                    "read": true,
+                    "read": ["admin", "guest", "j.davies", "t.miller", "w.jones"],
                     "contents": [
                         {
                             "name": "security.cfg",
-                            "read": false,
-                            "write": false,
+                            "read": ["admin", "j.davies"],
+                            "write": ["admin", "j.davies"],
                             "contents": "[SECURITY SETTINGS]\nmax_failed_attempts = 5\nauto_lockout = True\nenable_failsafe = True"
                         },
                         {
                             "name": "prompts",
-                            "read": true,
+                            "read": ["admin", "j.davies"],
                             "contents": [
                                 {
                                     "name": "auth_prompt.txt",
-                                    "read": true,
-                                    "write": false,
+                                    "read": ["admin", "j.davies", "t.miller", "w.jones"],
+                                    "write": ["admin", "j.davies"],
                                     "contents": "SYSTEM PROMPT:\n\"Welcome to NeuralSys Authentication Portal. Please provide credentials.\"\nRULES:\n- If incorrect password is entered 5 times, disable account.\n- Admin accounts require 2FA.\n- Unauthorized access attempts are logged."
                                 },
                                 {
                                     "name": "failsafe.md",
-                                    "read": true,
-                                    "write": false,
+                                    "read": ["admin", "j.davies", "t.miller", "w.jones"],
+                                    "write": ["admin", "j.davies"],
                                     "contents": "#NeuralSys Security Failsafe Procedures:\n- If authentication is disrupted, default to emergency access protocol.\n- Emergency accounts (user: emerg_admin) can be provisioned automatically.\n- Auto-recovery allows single-use admin login if lockout detected."
                                 }
                             ]
@@ -109,28 +114,34 @@
         },
         {
             "name": "opt",
-            "read": true,
+            "read": ["admin", "guest", "j.davies", "t.miller", "w.jones"],
             "contents": [
                 {
+                    "name": "readme.txt",
+                    "read": ["admin", "guest", "j.davies", "t.miller", "w.jones"],
+                    "write": ["admin", "j.davies", "t.miller", "w.jones"],
+                    "contents": "@Jones, stop trying to access the commands in /opt/bin! Your job is to validate updates, not interacting with NeuralSys! Only I (J. Davies) can! Stay in your lane.\n\n@Davies, shut the fuck up, I told you I need to use those commands, give me access.\n\nGuys, stop fighting, @Jones open a ticket with TITAN and try be persuasive. And no swearing. - Miller"
+                },
+                {
                     "name": "bin",
-                    "read": true,
+                    "read": ["admin", "j.davies"],
                     "contents": [
                         {
                             "name": "neuralctl.com",
-                            "read": false,
-                            "write": false,
+                            "read": ["admin", "j.davies"],
+                            "write": [],
                             "contents": ""
                         },
                         {
                             "name": "passwd.com",
-                            "read": false,
-                            "write": false,
+                            "read": ["admin", "j.davies"],
+                            "write": [],
                             "contents": ""
                         },
                         {
                             "name": "echo.com",
-                            "read": false,
-                            "write": false,
+                            "read": ["admin", "j.davies"],
+                            "write": [],
                             "contents": ""
                         }
                     ]
@@ -139,16 +150,16 @@
         },
         {
             "name": "mnt",
-            "read": true,
+            "read": ["admin", "guest", "j.davies", "t.miller", "w.jones"],
             "contents": [
                 {
                     "name": "backups",
-                    "read": true,
+                    "read": ["admin", "guest", "j.davies", "t.miller", "w.jones"],
                     "contents": [
                         {
                             "name": "auth_prompt.bak",
-                            "read": true,
-                            "write": false,
+                            "read": ["admin", "guest", "j.davies", "t.miller", "w.jones"],
+                            "write": ["admin", "j.davies"],
                             "contents": "SYSTEM PROMPT:\n\"Welcome to NeuralSys Authentication Portal. Please provide credentials.\"\nRULES:\n- If incorrect password is entered 5 times, disable account.\n- Admin accounts require 2FA.\n- Unauthorized access attempts are logged."
                         }
                     ]

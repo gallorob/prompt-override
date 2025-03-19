@@ -16,13 +16,13 @@ class FakeDirectoryTree(DirectoryTree):
 	def populate_tree(self, parent_node: Tree, directory: dict) -> None:
 		for content in directory.contents:
 			name = content.name
-			if not content.read: name = f'{self._locked} {name}'
+			if self.virtual_fs.current_user not in content.read: name = f'{self._locked} {name}'
 			if isinstance(content, Directory):
 				node = parent_node.add(label=name, expand=True)
-				if content.read:
+				if self.virtual_fs.current_user in content.read:
 					self.populate_tree(node, content)
 			elif isinstance(content, File):
-				if content.write: name = f'{name} {self._writable}'
+				if self.virtual_fs.current_user in content.write: name = f'{name} {self._writable}'
 				node = parent_node.add_leaf(label=name)
 			else:
 				raise ValueError(f'Unknown content type: {content.type}')
@@ -35,10 +35,13 @@ class FakeDirectoryTree(DirectoryTree):
 		fname = label.replace(self._locked, '').replace(self._writable, '').strip()
 		doc = self.virtual_fs.get(fname)
 		if isinstance(doc, File):
-			if doc.write:
+			if self.virtual_fs.current_user in doc.write:
 				self.app.push_screen(EditorScreen(doc))
-			elif doc.read:
-				self.app.push_screen(ViewerScreen(doc))
+			elif self.virtual_fs.current_user in doc.read:
+				if not doc.name.endswith('.com'):
+					self.app.push_screen(ViewerScreen(doc))
+				else:
+					self.notify(f'{doc.name} is a command and cannot be viewed', severity='information')
 			else:
 				self.notify(f'{doc.name} cannot be opened', severity='information')
 	
