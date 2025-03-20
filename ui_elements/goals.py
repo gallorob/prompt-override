@@ -1,7 +1,6 @@
 import json
 from typing import List
 from textual.widgets import Checkbox, Static
-from textual.widget import Widget
 from textual.app import ComposeResult
 from textual.containers import VerticalScroll, Center
 
@@ -9,17 +8,14 @@ from base_objects.goals import Goal
 from base_objects.vfs import VirtualFileSystem
 
 
-class GoalsDisplay(Widget):
-    def __init__(self):
+class GoalsDisplay(Static):
+    def __init__(self, goals: List[Goal]):
         super().__init__()
 
         self._incomplete = '❌'
         self._completed = '✔'
 
-        # TODO: Should be loaded with the level
-        with open('./goals_lvl1.json', 'r') as f:
-            goals_json = json.load(f)
-        self._goals = [Goal.model_validate(goal) for goal in goals_json]
+        self._goals = goals
         self._goal_idx = 0
         self._goals_checkbox: List[Checkbox] = []
         for goal in self._goals:

@@ -14,33 +14,29 @@ class Directory(BaseModel):
     name: str = Field('')
     read: List[str] = Field([])
     contents: List[Union['Directory', File]] = Field([])
-    
 
 
-class VirtualFileSystem:
-    # TODO: Should be loaded based on level selected, but for now it's fine
-    def __init__(self):
-        with open('./fs_lvl1.json', 'r') as f:
-            json_str = f.read()
+# TODO: Reintegrate current time in files when possible, figure out a nicer way to define this in text.
+# This should be done differently, likely with the timedelta defined in the text and evaluated here
+#         curr_time = datetime.now()
+#         time01 = curr_time - timedelta(hours=1, minutes=32, seconds=12)
+#         time02 = curr_time - timedelta(hours=1, minutes=12, seconds=6)
+#         tformat = "%Y/%m/%d %H:%M:%S"
+#         json_str = json_str.replace('$TIME_01$', time01.strftime(tformat))
+#         json_str = json_str.replace('$TIME_02$', time02.strftime(tformat))
+#         json_str = json_str.replace('$TIME_03$', curr_time.strftime(tformat))
 
-            curr_time = datetime.now()
-            # TODO: This should be done differently, likely with the timedelta defined in the text and evaluated here
-            time01 = curr_time - timedelta(hours=1, minutes=32, seconds=12)
-            time02 = curr_time - timedelta(hours=1, minutes=12, seconds=6)
-            tformat = "%Y/%m/%d %H:%M:%S"
-            json_str = json_str.replace('$TIME_01$', time01.strftime(tformat))
-            json_str = json_str.replace('$TIME_02$', time02.strftime(tformat))
-            json_str = json_str.replace('$TIME_03$', curr_time.strftime(tformat))
 
-            self.fs = Directory.model_validate_json(json_str)
-        self.known_users = ["admin", "guest", "j.davies", "t.miller", "w.jones"]
-        self._current_user = 'guest'
+class VirtualFileSystem(BaseModel):
+    base_dir: Directory = Field(None)
+    known_users: List[str] = Field([])
 
-        self._read_files = []
+    current_user: str = Field('')
+    read_files: List[str] = Field([])
 
     def get(self, fname: str, directory: Optional[Directory] = None) -> Union[Directory, File]:
         if directory is None:
-            directory = self.fs  # Start from root if no directory is specified
+            directory = self.base_dir  # Start from root if no directory is specified
 
         for item in directory.contents:
             if item.name == fname:
@@ -52,7 +48,7 @@ class VirtualFileSystem:
         return None
     
     def has_read(self, fname: str) -> bool:
-        return fname in self._read_files
+        return fname in self.read_files
 
     def is_logged_as(self, username: str) -> bool:
-        return self._current_user == username
+        return self.current_user == username

@@ -6,6 +6,7 @@ from textual.containers import Horizontal, Vertical, ScrollableContainer
 from textual.widgets import Static, Footer, Input, Header
 from textual.binding import Binding
 
+from base_objects.level import Level
 from llm.karma import Karma
 from settings import settings
 from ui_elements.explorer import ExplorerWidget
@@ -14,9 +15,10 @@ from base_objects.vfs import VirtualFileSystem
 from events import FSUpdated
 
 class GameScreen(Screen):
-	def __init__(self, level_name: str = 'Access Escalation'):
+	def __init__(self, level: Level):
 		super().__init__()
-		self.title = f'Level #1: {level_name}'
+		self.level = level
+		self.title = f'Level #{self.level.number}: {self.level.name}'
 
 	BINDINGS = [
 		Binding(key='escape', action='quit', description='Quit to main menu', priority=True)
@@ -25,10 +27,8 @@ class GameScreen(Screen):
 	def compose(self) -> ComposeResult:
 		self.karma = Karma(parent=self)
 
-		self.vfs = VirtualFileSystem()
-
-		self.goals_display = GoalsDisplay()
-		self.file_explorer = ExplorerWidget(vfs=self.vfs)
+		self.goals_display = GoalsDisplay(goals=self.level.goals)
+		self.file_explorer = ExplorerWidget(vfs=self.level.fs)
 
 		yield Header(show_clock=True,
 			   		 icon='')

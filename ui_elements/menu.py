@@ -4,6 +4,7 @@ from textual.containers import Center, Vertical, Container
 from textual.widgets import Button, Static, Footer
 from textual.binding import Binding
 
+from base_objects.level import Level
 from settings import settings
 from ui_elements.game import GameScreen
 
@@ -45,7 +46,9 @@ class MenuScreen(Screen):
 			self.action_quit()
 
 	def action_new_game(self) -> None:
-		self.app.push_screen(GameScreen())
+		with open('./assets/level01.json', 'r') as f:
+			level = Level.model_validate_json(f.read())
+		self.app.push_screen(GameScreen(level=level))
 
 	def action_settings(self) -> None:
 		self.app.switch_mode('settings')
