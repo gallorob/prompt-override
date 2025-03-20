@@ -8,9 +8,10 @@ from textual.binding import Binding
 
 from llm.karma import Karma
 from settings import settings
-from ui_elements.fs_explorer import FakeDirectoryTree
-from ui_elements.goals_widget import GoalsDisplay
-from vfs import FSUpdated, VirtualFileSystem
+from ui_elements.explorer import ExplorerWidget
+from ui_elements.goals import GoalsDisplay
+from base_objects.vfs import VirtualFileSystem
+from events import FSUpdated
 
 class GameScreen(Screen):
 	def __init__(self, level_name: str = 'Access Escalation'):
@@ -18,7 +19,7 @@ class GameScreen(Screen):
 		self.title = f'Level #1: {level_name}'
 
 	BINDINGS = [
-		Binding(key='escape', action='quit', description='Back to main menu', priority=True)
+		Binding(key='escape', action='quit', description='Quit to main menu', priority=True)
 	]
 
 	def compose(self) -> ComposeResult:
@@ -27,7 +28,7 @@ class GameScreen(Screen):
 		self.vfs = VirtualFileSystem()
 
 		self.goals_display = GoalsDisplay()
-		self.file_explorer = FakeDirectoryTree(vfs=self.vfs)
+		self.file_explorer = ExplorerWidget(vfs=self.vfs)
 
 		yield Header(show_clock=True,
 			   		 icon='')

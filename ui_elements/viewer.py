@@ -4,7 +4,7 @@ from textual.containers import Container
 from textual.widgets import TextArea, Footer, Header
 from textual.binding import Binding
 
-from vfs import File
+from base_objects.vfs import File
 
 class ViewerScreen(ModalScreen):
     def __init__(self, file_obj: File) -> None:

@@ -1,7 +1,7 @@
 from typing import Dict, List
 from pydantic import BaseModel, Field
 
-from vfs import VirtualFileSystem
+from base_objects.vfs import VirtualFileSystem
 
 
 class Trigger(BaseModel):

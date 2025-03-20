@@ -3,12 +3,12 @@ from textual.app import App
 from ui_elements.game import GameScreen
 from ui_elements.menu import MenuScreen
 from settings import settings
-from ui_elements.options import SettingsScreen
+from ui_elements.settings import SettingsScreen
 
 class MainApp(App):
 	ENABLE_COMMAND_PALETTE = False
 	
-	with open('style.tcss', 'r') as f:
+	with open('./assets/style.tcss', 'r') as f:
 		CSS = f.read()
 
 	MODES = {

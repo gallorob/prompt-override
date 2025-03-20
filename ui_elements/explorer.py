@@ -2,9 +2,10 @@ from textual.widgets import DirectoryTree, Tree
 
 from ui_elements.editor import EditorScreen
 from ui_elements.viewer import ViewerScreen
-from vfs import Directory, File, VirtualFileSystem, FSUpdated
+from base_objects.vfs import Directory, File, VirtualFileSystem
+from events import FSUpdated
 
-class FakeDirectoryTree(DirectoryTree):
+class ExplorerWidget(DirectoryTree):
 	def __init__(self, vfs: VirtualFileSystem, name: str = "root") -> None:
 		super().__init__(name)
 		self.virtual_fs = vfs
