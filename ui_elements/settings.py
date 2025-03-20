@@ -12,7 +12,7 @@ class SettingsScreen(Screen):
     BINDINGS = [Binding("escape", "quit", "Back to main menu")]
 
     def compose(self) -> ComposeResult:
-        yield Center(Static("[bold]Settings[/bold]\n", markup=True))
+        yield Center(Static("[bold]Settings[/bold]", markup=True, classes="horizontal-centered"))
         self.container = ScrollableContainer()
         yield self.container
         yield Center(Button("Save Settings", id='save_button'))
@@ -26,7 +26,7 @@ class SettingsScreen(Screen):
             full_key = f"{prefix}{key}"
             
             if isinstance(value, dict):  
-                self.container.mount(Static(f"[bold]{full_key}[/bold]:", classes="category"))
+                self.container.mount(Static(f"[bold]{full_key}[/bold]:", classes="horizontal-centered"))
                 self.build_settings_ui(getattr(obj, key), prefix=f"{full_key}-")
             else:
                 input_widget = Input(value=str(value), id=f"input_{full_key}")
@@ -38,8 +38,7 @@ class SettingsScreen(Screen):
     async def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "save_button":
             self.save_settings()
-
-    # TODO: More correctly, this should all be done in settings.py
+            self.action_quit()
 
     def save_settings(self) -> None:
         """Saves the updated settings values from inputs."""
@@ -57,8 +56,6 @@ class SettingsScreen(Screen):
             except ValueError:
                 self.app.notify(f"Invalid value for {key}: {raw_value}", severity="error")
                 return
-
-        # TODO: Actually update settings (see https://docs.pydantic.dev/latest/concepts/pydantic_settings/#in-place-reloading)
         self.app.notify("Settings saved successfully!", severity="info")
 
     def get_nested_value(self, obj: BaseModel, key: str):

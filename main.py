@@ -13,8 +13,7 @@ class MainApp(App):
 
 	MODES = {
 		'menu': MenuScreen,
-		'in_game': GameScreen,
-		'options': SettingsScreen
+		'settings': SettingsScreen
 	}
 
 	def on_mount(self) -> None:

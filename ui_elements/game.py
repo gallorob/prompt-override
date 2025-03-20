@@ -81,4 +81,4 @@ class GameScreen(Screen):
 			chat_containter.scroll_end(animate=True)
 
 	def action_quit(self) -> None:
-		self.app.switch_mode('menu')
+		self.app.pop_screen()

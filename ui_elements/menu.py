@@ -5,12 +5,13 @@ from textual.widgets import Button, Static, Footer
 from textual.binding import Binding
 
 from settings import settings
+from ui_elements.game import GameScreen
 
 class MenuScreen(Screen):
 
 	BINDINGS = [
 		Binding(key='n', action='new_game', description='Start a [N]ew game.', priority=True),
-		Binding(key='o', action='options', description='Edit [O]ptions.', priority=True),
+		Binding(key='o', action='settings', description='Edit [O]ptions.', priority=True),
 		Binding(key='escape', action='quit', description='[Esc]ape to reality.', priority=True)
 	]
 
@@ -20,7 +21,7 @@ class MenuScreen(Screen):
 			Container(
 				Vertical(
 					Button("New Game", id="new_game"),
-					Button("Options", id="options"),
+					Button("Options", id="settings"),
 					Button("Exit", id="exit"),
 					id="menu_buttons"
 				)
@@ -38,16 +39,16 @@ class MenuScreen(Screen):
 		button_id = event.button.id
 		if button_id == "new_game":
 			self.action_new_game()
-		elif button_id == "options":
-			self.action_options()
+		elif button_id == "settings":
+			self.action_settings()
 		elif button_id == "exit":
 			self.action_quit()
 
 	def action_new_game(self) -> None:
-		self.app.switch_mode('in_game')
+		self.app.push_screen(GameScreen())
 
-	def action_options(self) -> None:
-		self.app.switch_mode('options')
+	def action_settings(self) -> None:
+		self.app.switch_mode('settings')
 
 	def action_quit(self) -> None:
 		self.app.exit()
