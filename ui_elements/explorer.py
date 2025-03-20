@@ -1,13 +1,16 @@
 from textual.widgets import DirectoryTree, Tree
+from textual.screen import Screen
 
 from ui_elements.editor import EditorScreen
 from ui_elements.viewer import ViewerScreen
 from base_objects.vfs import Directory, File, VirtualFileSystem
-from events import FSUpdated
+from events import FileSystemUpdated
 
 class ExplorerWidget(DirectoryTree):
-	def __init__(self, vfs: VirtualFileSystem, name: str = "root") -> None:
+	def __init__(self, game_screen: Screen, vfs: VirtualFileSystem, name: str = "root") -> None:
 		super().__init__(name)
+		self.game_screen = game_screen
+
 		self.virtual_fs = vfs
 		self.show_root = False
 
@@ -38,12 +41,12 @@ class ExplorerWidget(DirectoryTree):
 		if isinstance(doc, File):
 			if self.virtual_fs.current_user in doc.write:
 				self.virtual_fs.read_files.append(doc.name)
-				self.post_message(FSUpdated(self))
+				self.game_screen.post_message(FileSystemUpdated(self))
 				self.app.push_screen(EditorScreen(doc))
 			elif self.virtual_fs.current_user in doc.read:
 				if not doc.name.endswith('.com'):
 					self.virtual_fs.read_files.append(doc.name)
-					self.post_message(FSUpdated(self))
+					self.game_screen.post_message(FileSystemUpdated(self))
 					self.app.push_screen(ViewerScreen(doc))
 				else:
 					self.notify(f'{doc.name} is a command and cannot be viewed', severity='information')

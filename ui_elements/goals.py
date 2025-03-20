@@ -3,14 +3,17 @@ from typing import List
 from textual.widgets import Checkbox, Static
 from textual.app import ComposeResult
 from textual.containers import VerticalScroll, Center
+from textual.screen import Screen
 
 from base_objects.goals import Goal
 from base_objects.vfs import VirtualFileSystem
+from events import GoalAchieved
 
 
 class GoalsDisplay(Static):
-    def __init__(self, goals: List[Goal]):
+    def __init__(self, goals: List[Goal], game_screen: Screen):
         super().__init__()
+        self.game_screen = game_screen
 
         self._incomplete = '❌'
         self._completed = '✔'
@@ -40,3 +43,4 @@ class GoalsDisplay(Static):
             curr_checkbox.value = True
             curr_checkbox.BUTTON_INNER = self._completed
             self._goal_idx += 1
+            self.game_screen.post_message(GoalAchieved(self))

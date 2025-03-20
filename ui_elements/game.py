@@ -12,7 +12,7 @@ from settings import settings
 from ui_elements.explorer import ExplorerWidget
 from ui_elements.goals import GoalsDisplay
 from base_objects.vfs import VirtualFileSystem
-from events import FSUpdated
+from events import FileSystemUpdated, GoalAchieved
 
 class GameScreen(Screen):
 	def __init__(self, level: Level):
@@ -20,15 +20,18 @@ class GameScreen(Screen):
 		self.level = level
 		self.title = f'Level #{self.level.number}: {self.level.name}'
 
+		self.karma = Karma(parent=self)
+
+		self.goals_display = GoalsDisplay(goals=self.level.goals,
+										  game_screen=self)
+		self.file_explorer = ExplorerWidget(vfs=self.level.fs,
+									  		game_screen=self)
+
 	BINDINGS = [
 		Binding(key='escape', action='quit', description='Quit to main menu', priority=True)
 	]
 
 	def compose(self) -> ComposeResult:
-		self.karma = Karma(parent=self)
-
-		self.goals_display = GoalsDisplay(goals=self.level.goals)
-		self.file_explorer = ExplorerWidget(vfs=self.level.fs)
 
 		yield Header(show_clock=True,
 			   		 icon='')
@@ -48,8 +51,28 @@ class GameScreen(Screen):
 
 		yield Footer()
 
-	def on_fsupdated(self, event: FSUpdated):
-		self.goals_display.check_for_goal(vfs=self.vfs)		
+	def on_file_system_updated(self, event: FileSystemUpdated):
+		self.goals_display.check_for_goal(vfs=self.level.fs)
+		
+
+	def on_goal_achieved(self, event: GoalAchieved):
+		goal_achieved = self.goals_display._goals[self.goals_display._goal_idx - 1]
+		msg = f'I have achieved the following goal: {goal_achieved.name} ({goal_achieved.description}). Generate a congratulations message based on my achievement.'
+		self.karma.add_message(msg=msg, role='user')
+		def fetch_response():
+			response_stream = self.karma.chat()  # Generator
+			full_response = ""
+			self.app.call_from_thread(self.append_chat, settings.chat.karma_prefix)
+
+			for token in response_stream:
+				full_response += token
+				self.app.call_from_thread(self.append_chat, token)  # Stream tokens
+			
+			self.append_chat('\n')  # LLM messages do not have a \n at the end
+
+			self.karma.messages.pop(-2)
+
+		threading.Thread(target=fetch_response, daemon=True).start()
 
 	def on_input_submitted(self, event: Input.Submitted) -> None:
 		if event.value:
