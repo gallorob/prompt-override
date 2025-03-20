@@ -2,11 +2,12 @@ Screen {
     overflow: auto;
     align: center top;
 }
+
 #menu_buttons {
     align: center top;
 }
 
-.console-container {
+.explorer-container {
     height: 70%;
 }
 
@@ -16,6 +17,11 @@ Screen {
 
 .chat-container {
     width: 40%;
+}
+
+.horizontal-centered{
+    align: center middle;
+    text-align: center;
 }
 
 #editor {

@@ -3,12 +3,14 @@ import threading
 from textual.screen import Screen
 from textual.app import ComposeResult
 from textual.containers import Horizontal, Vertical, ScrollableContainer
-from textual.widgets import Static, Footer, Input, MarkdownViewer, Header
+from textual.widgets import Static, Footer, Input, Header
 from textual.binding import Binding
 
 from llm.karma import Karma
 from settings import settings
 from ui_elements.fs_explorer import FakeDirectoryTree
+from ui_elements.goals_widget import GoalsDisplay
+from vfs import FSUpdated, VirtualFileSystem
 
 class GameScreen(Screen):
 	def __init__(self, level_name: str = 'Access Escalation'):
@@ -22,27 +24,31 @@ class GameScreen(Screen):
 	def compose(self) -> ComposeResult:
 		self.karma = Karma(parent=self)
 
+		self.vfs = VirtualFileSystem()
+
+		self.goals_display = GoalsDisplay()
+		self.file_explorer = FakeDirectoryTree(vfs=self.vfs)
+
 		yield Header(show_clock=True,
 			   		 icon='')
 
 		with Horizontal():
-			# Left panel: Console and Objectives
 			with Vertical():
-				with Vertical(classes="console-container"):
-					yield Static("Console", classes="console-header")
-					# yield TextArea(id="console_output", soft_wrap=True)
-					yield ScrollableContainer(FakeDirectoryTree())
+				with Vertical(classes="explorer-container"):
+					yield Static("File Explorer", classes="horizontal-centered")
+					yield ScrollableContainer(self.file_explorer)
 				with Vertical(classes="objective-container"):
-					# TODO: Should be a list with checkboxes instead
-					yield MarkdownViewer("# Mission Objectives\n#### 🗹 Connect to remote machine\n#### ☐ Access system logs", show_table_of_contents=False, id="objective_viewer")
+					yield self.goals_display
 			
-			# Right panel: Chat widget
 			with Vertical(classes="chat-container"):
-				yield Static("Chat History", classes="chat-header")
+				yield Static("Chat History", classes="horizontal-centered")
 				yield ScrollableContainer(Static("", markup=True, expand=True, id="chat_history"))
 				yield Input(placeholder="Type a message...", id="chat_input")
 
 		yield Footer()
+
+	def on_fsupdated(self, event: FSUpdated):
+		self.goals_display.check_for_goal(vfs=self.vfs)		
 
 	def on_input_submitted(self, event: Input.Submitted) -> None:
 		if event.value:

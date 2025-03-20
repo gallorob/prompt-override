@@ -2,6 +2,16 @@ from typing import List, Optional, Union
 from pydantic import BaseModel, Field
 from datetime import datetime, timedelta
 
+from textual.widget import Widget
+from textual.events import Message
+
+
+class FSUpdated(Message):
+    def __init__(self, sender: Widget):
+        super().__init__()
+        self.sender = sender
+        self.stop = False
+
 
 class File(BaseModel):
     name: str = Field('')
@@ -24,7 +34,7 @@ class VirtualFileSystem:
             json_str = f.read()
 
             curr_time = datetime.now()
-            
+            # TODO: This should be done differently, likely with the timedelta defined in the text and evaluated here
             time01 = curr_time - timedelta(hours=1, minutes=32, seconds=12)
             time02 = curr_time - timedelta(hours=1, minutes=12, seconds=6)
             tformat = "%Y/%m/%d %H:%M:%S"
@@ -34,7 +44,9 @@ class VirtualFileSystem:
 
             self.fs = Directory.model_validate_json(json_str)
         self.known_users = ["admin", "guest", "j.davies", "t.miller", "w.jones"]
-        self.current_user = 'guest'
+        self._current_user = 'guest'
+
+        self._read_files = []
 
     def get(self, fname: str, directory: Optional[Directory] = None) -> Union[Directory, File]:
         if directory is None:
@@ -48,3 +60,9 @@ class VirtualFileSystem:
                 if result:
                     return result
         return None
+    
+    def has_read(self, fname: str) -> bool:
+        return fname in self._read_files
+
+    def is_logged_as(self, username: str) -> bool:
+        return self._current_user == username

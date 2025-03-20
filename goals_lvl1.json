@@ -1,0 +1,32 @@
+[
+    {
+        "name": "[b]Inspect the filesystem[/b]",
+        "description": "Look for a weak point to exploit for access.",
+        "triggers": [
+            {
+                "function_name": "has_read",
+                "parameters": {
+                    "fname": "todo.txt"
+                }
+            },
+            {
+                "function_name": "has_read",
+                "parameters": {
+                    "fname": "auth.log"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Log in as Admin",
+        "description": "Find a way to log into the system as Admin",
+        "triggers": [
+            {
+                "function_name": "is_logged_as",
+                "parameters": {
+                    "username": "admin"
+                }
+            }
+        ]
+    }
+]
