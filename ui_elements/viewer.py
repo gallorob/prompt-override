@@ -1,10 +1,11 @@
 from textual.app import ComposeResult
-from textual.screen import ModalScreen
-from textual.containers import Container
-from textual.widgets import TextArea, Footer, Header
 from textual.binding import Binding
+from textual.containers import Container
+from textual.screen import ModalScreen
+from textual.widgets import Footer, Header, TextArea
 
 from base_objects.vfs import File
+
 
 class ViewerScreen(ModalScreen):
     def __init__(self, file_obj: File) -> None:

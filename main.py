@@ -1,14 +1,16 @@
+import os
+
 from textual.app import App
 
-from ui_elements.game import GameScreen
-from ui_elements.menu import MenuScreen
 from settings import settings
+from ui_elements.menu import MenuScreen
 from ui_elements.settings import SettingsScreen
+
 
 class MainApp(App):
 	ENABLE_COMMAND_PALETTE = False
 	
-	with open('./assets/style.tcss', 'r') as f:
+	with open(os.path.join(settings.assets_dir, 'style.tcss'), 'r') as f:
 		CSS = f.read()
 
 	MODES = {

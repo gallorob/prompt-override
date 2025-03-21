@@ -1,10 +1,14 @@
-from typing import List
-from pydantic import BaseModel, Field
+import os
 import re
 from datetime import datetime, timedelta
+from typing import List
+
+from pydantic import BaseModel, Field
 
 from base_objects.goals import Goal
 from base_objects.vfs import VirtualFileSystem
+from settings import settings
+
 
 class Level(BaseModel):
     name: str = Field('level_n')
@@ -35,6 +39,7 @@ class Level(BaseModel):
 
 if __name__ == '__main__':
     import json
+
     from vfs import Directory
 
     with open('./fs_lvl1.json', 'r') as f:
@@ -49,5 +54,5 @@ if __name__ == '__main__':
                   fs=VirtualFileSystem(base_dir=base_dir, known_users=["admin", "guest", "j.davies", "t.miller", "w.jones"], current_user='guest'),
                   goals=goals)
 
-    with open('./assets/level01.json', 'w') as f:
+    with open(os.path.join(settings.assets_dir, 'level01.json'), 'w') as f:
         f.write(level.model_dump_json(indent=2))

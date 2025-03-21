@@ -1,13 +1,17 @@
+import os
 from typing import Generator, List
-from settings import settings
+
 import ollama
 from textual.screen import Screen
+
+from settings import settings
+
 
 class Karma:
     def __init__(self,
                  parent: Screen,
                  snippets: List[str]):
-        with open(settings.karma.prompt, 'r') as f:
+        with open(os.path.join(settings.assets_dir, settings.karma.model_prompt), 'r') as f:
             self.prompt = f.read()
         self.prompt = self.prompt.replace('$snippets$', '\n\n'.join(snippets))
         self.messages = [{'role': 'system', 'content': self.prompt}]

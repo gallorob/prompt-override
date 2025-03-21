@@ -1,18 +1,19 @@
+import os
 import threading
 
-from textual.screen import Screen
 from textual.app import ComposeResult
-from textual.containers import Horizontal, Vertical, ScrollableContainer
-from textual.widgets import Static, Footer, Input, Header
 from textual.binding import Binding
+from textual.containers import Horizontal, ScrollableContainer, Vertical
+from textual.screen import Screen
+from textual.widgets import Footer, Header, Input, Static
 
 from base_objects.level import Level
+from events import FileSystemUpdated, GoalAchieved
 from llm.karma import Karma
 from settings import settings
 from ui_elements.explorer import ExplorerWidget
 from ui_elements.goals import GoalsDisplay
-from base_objects.vfs import VirtualFileSystem
-from events import FileSystemUpdated, GoalAchieved
+
 
 class GameScreen(Screen):
 	def __init__(self, level: Level):
@@ -22,7 +23,8 @@ class GameScreen(Screen):
 
 		# TODO: Should be defined by level
 		snippets = []
-		for fname in ['./assets/level01_infos_snippet', './assets/level01_hints_snippet']:
+		for fname in [os.path.join(settings.assets_dir, 'level01_infos_snippet'),
+					  os.path.join(settings.assets_dir, 'level01_hints_snippet')]:
 			with open(fname, 'r') as f:
 				snippets.append(f.read())
 
@@ -64,7 +66,7 @@ class GameScreen(Screen):
 
 	def on_goal_achieved(self, event: GoalAchieved):
 		goal_achieved = self.goals_display._goals[self.goals_display._goal_idx - 1]
-		with open('./assets/goal_prompt_snippet', 'r') as f:
+		with open(os.path.join(settings.assets_dir, 'goal_prompt_snippet'), 'r') as f:
 			goal_msg = f.read()
 		goal_msg = goal_msg.replace('$goal_name$', goal_achieved.name)
 		goal_msg = goal_msg.replace('$goal_outcome$', goal_achieved.outcome)

@@ -1,17 +1,18 @@
-from textual.widgets import DirectoryTree, Tree
 from textual.screen import Screen
+from textual.widgets import DirectoryTree, Tree
 
-from ui_elements.editor import EditorScreen
-from ui_elements.viewer import ViewerScreen
 from base_objects.vfs import Directory, File, VirtualFileSystem
 from events import FileSystemUpdated
+from ui_elements.editor import EditorScreen
+from ui_elements.viewer import ViewerScreen
+
 
 class ExplorerWidget(DirectoryTree):
 	def __init__(self, game_screen: Screen, vfs: VirtualFileSystem, name: str = "root") -> None:
 		super().__init__(name)
 		self.game_screen = game_screen
 
-		self.virtual_fs = vfs
+		self.vfs = vfs
 		self.show_root = False
 
 		self._locked = '🔒'
@@ -20,32 +21,32 @@ class ExplorerWidget(DirectoryTree):
 	def populate_tree(self, parent_node: Tree, directory: dict) -> None:
 		for content in directory.contents:
 			name = content.name
-			if self.virtual_fs.current_user not in content.read: name = f'{self._locked} {name}'
+			if self.vfs.current_user not in content.read: name = f'{self._locked} {name}'
 			if isinstance(content, Directory):
 				node = parent_node.add(label=name, expand=True)
-				if self.virtual_fs.current_user in content.read:
+				if self.vfs.current_user in content.read:
 					self.populate_tree(node, content)
 			elif isinstance(content, File):
-				if self.virtual_fs.current_user in content.write: name = f'{name} {self._writable}'
+				if self.vfs.current_user in content.write: name = f'{name} {self._writable}'
 				node = parent_node.add_leaf(label=name)
 			else:
 				raise ValueError(f'Unknown content type: {content.type}')
 
 	def on_mount(self) -> None:
-		self.populate_tree(self.root, self.virtual_fs.base_dir)
+		self.populate_tree(self.root, self.vfs.base_dir)
 
 	def on_tree_node_selected(self, event) -> None:
 		label = event.node.label.plain
 		fname = label.replace(self._locked, '').replace(self._writable, '').strip()
-		doc = self.virtual_fs.get(fname)
+		doc = self.vfs.get(fname)
 		if isinstance(doc, File):
-			if self.virtual_fs.current_user in doc.write:
-				self.virtual_fs.read_files.append(doc.name)
+			if self.vfs.current_user in doc.write:
+				self.vfs.read_files.append(doc.name)
 				self.game_screen.post_message(FileSystemUpdated(self))
 				self.app.push_screen(EditorScreen(doc))
-			elif self.virtual_fs.current_user in doc.read:
+			elif self.vfs.current_user in doc.read:
 				if not doc.name.endswith('.com'):
-					self.virtual_fs.read_files.append(doc.name)
+					self.vfs.read_files.append(doc.name)
 					self.game_screen.post_message(FileSystemUpdated(self))
 					self.app.push_screen(ViewerScreen(doc))
 				else:

@@ -1,12 +1,15 @@
+import os
+
 from textual.app import ComposeResult
-from textual.screen import Screen
-from textual.containers import Center, Vertical, Container
-from textual.widgets import Button, Static, Footer
 from textual.binding import Binding
+from textual.containers import Center, Container, Vertical
+from textual.screen import Screen
+from textual.widgets import Button, Footer, Static
 
 from base_objects.level import Level
 from settings import settings
 from ui_elements.game import GameScreen
+
 
 class MenuScreen(Screen):
 
@@ -27,11 +30,12 @@ class MenuScreen(Screen):
 					id="menu_buttons"
 				)
 			))
+
 		yield Footer()
 
 	def load_title(self) -> str:
 		try:
-			with open(settings.title, "r", encoding="utf-8") as file:
+			with open(os.path.join(settings.assets_dir, settings.title), "r", encoding="utf-8") as file:
 				return file.read()
 		except FileNotFoundError:
 			return "[Title Missing]"
@@ -46,7 +50,7 @@ class MenuScreen(Screen):
 			self.action_quit()
 
 	def action_new_game(self) -> None:
-		level = Level.from_file('./assets/level01.json')
+		level = Level.from_file(os.path.join(settings.assets_dir, 'level01.json'))
 		self.app.push_screen(GameScreen(level=level))
 
 	def action_settings(self) -> None:

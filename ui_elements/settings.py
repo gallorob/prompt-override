@@ -1,11 +1,12 @@
-from textual.screen import Screen
-from textual.app import ComposeResult
-from textual.containers import ScrollableContainer, Center
-from textual.widgets import Static, Footer, Button, Input
-from textual.binding import Binding
 from pydantic import BaseModel
+from textual.app import ComposeResult
+from textual.binding import Binding
+from textual.containers import Center, ScrollableContainer
+from textual.screen import Screen
+from textual.widgets import Button, Footer, Input, Static
 
 from settings import settings
+
 
 class SettingsScreen(Screen):
 

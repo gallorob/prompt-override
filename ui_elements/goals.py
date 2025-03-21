@@ -1,9 +1,10 @@
 import json
 from typing import List
-from textual.widgets import Checkbox, Static
+
 from textual.app import ComposeResult
-from textual.containers import VerticalScroll, Center
+from textual.containers import Center, VerticalScroll
 from textual.screen import Screen
+from textual.widgets import Checkbox, Static
 
 from base_objects.goals import Goal
 from base_objects.vfs import VirtualFileSystem
@@ -41,6 +42,7 @@ class GoalsDisplay(Static):
         if curr_goal.resolved(vfs=vfs):
             curr_checkbox = self._goals_checkbox[self._goal_idx]
             curr_checkbox.value = True
+            curr_checkbox.tooltip = curr_goal.outcome
             curr_checkbox.BUTTON_INNER = self._completed
             self._goal_idx += 1
             self.game_screen.post_message(GoalAchieved(self))

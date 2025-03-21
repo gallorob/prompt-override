@@ -1,5 +1,5 @@
-from textual.widget import Widget
 from textual.events import Message
+from textual.widget import Widget
 
 
 class FileSystemUpdated(Message):
