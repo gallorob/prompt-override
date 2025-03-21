@@ -16,17 +16,6 @@ class Directory(BaseModel):
     contents: List[Union['Directory', File]] = Field([])
 
 
-# TODO: Reintegrate current time in files when possible, figure out a nicer way to define this in text.
-# This should be done differently, likely with the timedelta defined in the text and evaluated here
-#         curr_time = datetime.now()
-#         time01 = curr_time - timedelta(hours=1, minutes=32, seconds=12)
-#         time02 = curr_time - timedelta(hours=1, minutes=12, seconds=6)
-#         tformat = "%Y/%m/%d %H:%M:%S"
-#         json_str = json_str.replace('$TIME_01$', time01.strftime(tformat))
-#         json_str = json_str.replace('$TIME_02$', time02.strftime(tformat))
-#         json_str = json_str.replace('$TIME_03$', curr_time.strftime(tformat))
-
-
 class VirtualFileSystem(BaseModel):
     base_dir: Directory = Field(None)
     known_users: List[str] = Field([])

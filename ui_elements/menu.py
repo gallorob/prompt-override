@@ -46,8 +46,7 @@ class MenuScreen(Screen):
 			self.action_quit()
 
 	def action_new_game(self) -> None:
-		with open('./assets/level01.json', 'r') as f:
-			level = Level.model_validate_json(f.read())
+		level = Level.from_file('./assets/level01.json')
 		self.app.push_screen(GameScreen(level=level))
 
 	def action_settings(self) -> None:
