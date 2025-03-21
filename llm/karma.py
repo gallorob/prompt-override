@@ -27,7 +27,8 @@ class Karma:
                     role: str) -> None:
         self.messages.append({'role': role, 'content': msg})
     
-    def chat(self) -> Generator[str, None, None]:
+    def chat(self,
+             **kwargs) -> Generator[str, None, None]:
         options = {
             'temperature': settings.karma.temperature,
             'top_p': settings.karma.top_p,

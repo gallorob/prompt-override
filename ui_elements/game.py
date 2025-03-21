@@ -13,6 +13,7 @@ from llm.karma import Karma
 from settings import settings
 from ui_elements.explorer import ExplorerWidget
 from ui_elements.goals import GoalsDisplay
+from ui_elements.login import LoginScreen
 
 
 class GameScreen(Screen):
@@ -37,7 +38,8 @@ class GameScreen(Screen):
 									  		game_screen=self)
 
 	BINDINGS = [
-		Binding(key='escape', action='quit', description='Quit to main menu', priority=True)
+		Binding(key='escape', action='quit', description='Quit', tooltip='Quit to main menu', priority=True),
+		Binding(key='l', action='login', description='Login', tooltip='Log in with a different account', priority=True)
 	]
 
 	def compose(self) -> ComposeResult:
@@ -48,7 +50,7 @@ class GameScreen(Screen):
 		with Horizontal():
 			with Vertical():
 				with Vertical(classes="explorer-container"):
-					yield Static("File Explorer", classes="horizontal-centered")
+					yield Static(content='Level Objectives:', classes="horizontal-centered")
 					yield ScrollableContainer(self.file_explorer)
 				with Vertical(classes="objective-container"):
 					yield self.goals_display
@@ -61,10 +63,10 @@ class GameScreen(Screen):
 		yield Footer()
 
 	def on_file_system_updated(self, event: FileSystemUpdated):
-		self.goals_display.check_for_goal(vfs=self.level.fs)
-		
+		if self.goals_display.check_for_goal(vfs=self.level.fs):
+			self.on_goal_achieved()
 
-	def on_goal_achieved(self, event: GoalAchieved):
+	def on_goal_achieved(self):#, event: GoalAchieved):
 		goal_achieved = self.goals_display._goals[self.goals_display._goal_idx - 1]
 		with open(os.path.join(settings.assets_dir, 'goal_prompt_snippet'), 'r') as f:
 			goal_msg = f.read()
@@ -112,6 +114,19 @@ class GameScreen(Screen):
 		chat_containter: ScrollableContainer = chat_history.parent
 		if chat_containter:
 			chat_containter.scroll_end(animate=True)
+
+	def action_login(self) -> None:
+		def check_login_successful(v: bool | None) -> None:
+			if v:
+				self.file_explorer.reset(label='root')
+				self.file_explorer.populate_tree(parent_node=self.file_explorer.root, directory=self.level.fs.base_dir)
+				if self.goals_display.check_for_goal(vfs=self.level.fs):
+					self.on_goal_achieved()
+
+		self.app.push_screen(LoginScreen(credentials=self.level.credentials,
+								   		 vfs=self.level.fs),
+							 check_login_successful)
+		
 
 	def action_quit(self) -> None:
 		self.app.pop_screen()

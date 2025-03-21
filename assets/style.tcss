@@ -37,3 +37,10 @@ Screen {
     border: thick $background 80%;
     background: $surface;
 }
+
+#login {
+    width: 40;
+    height: 15;
+    border: thick $background 80%;
+    background: $surface;
+}

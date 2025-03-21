@@ -369,5 +369,12 @@
         }
       ]
     }
-  ]
+  ],
+  "credentials": {
+    "guest": "password",
+    "j.davies": "TempPass123",
+    "t.miller": "",
+    "w.jones": "",
+    "admin": ""
+  }
 }

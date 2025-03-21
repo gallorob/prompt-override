@@ -1,5 +1,9 @@
 from textual.screen import Screen
-from textual.widgets import DirectoryTree, Tree
+from textual.widgets import DirectoryTree, Tree, Static
+from textual.widget import Widget
+from textual.reactive import reactive
+from textual.containers import Center, ScrollableContainer
+from textual.app import ComposeResult
 
 from base_objects.vfs import Directory, File, VirtualFileSystem
 from events import FileSystemUpdated
@@ -18,7 +22,7 @@ class ExplorerWidget(DirectoryTree):
 		self._locked = '🔒'
 		self._writable = '🖊'
 
-	def populate_tree(self, parent_node: Tree, directory: dict) -> None:
+	def populate_tree(self, parent_node: Tree, directory: Directory) -> None:
 		for content in directory.contents:
 			name = content.name
 			if self.vfs.current_user not in content.read: name = f'{self._locked} {name}'
@@ -31,9 +35,9 @@ class ExplorerWidget(DirectoryTree):
 				node = parent_node.add_leaf(label=name)
 			else:
 				raise ValueError(f'Unknown content type: {content.type}')
-
-	def on_mount(self) -> None:
-		self.populate_tree(self.root, self.vfs.base_dir)
+			
+	def on_mount(self):
+		self.populate_tree(parent_node=self.root, directory=self.vfs.base_dir)
 
 	def on_tree_node_selected(self, event) -> None:
 		label = event.node.label.plain

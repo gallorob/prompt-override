@@ -37,7 +37,7 @@ class GoalsDisplay(Static):
     def next_goal(self) -> Goal:
         return self._goals[self._goal_idx]
     
-    def check_for_goal(self, vfs: VirtualFileSystem) -> None:
+    def check_for_goal(self, vfs: VirtualFileSystem) -> bool:
         curr_goal = self.next_goal
         if curr_goal.resolved(vfs=vfs):
             curr_checkbox = self._goals_checkbox[self._goal_idx]
@@ -45,4 +45,6 @@ class GoalsDisplay(Static):
             curr_checkbox.tooltip = curr_goal.outcome
             curr_checkbox.BUTTON_INNER = self._completed
             self._goal_idx += 1
-            self.game_screen.post_message(GoalAchieved(self))
+            # self.game_screen.post_message(GoalAchieved(self))
+            return True
+        return False

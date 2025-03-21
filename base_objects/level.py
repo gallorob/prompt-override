@@ -1,7 +1,7 @@
 import os
 import re
 from datetime import datetime, timedelta
-from typing import List
+from typing import Dict, List
 
 from pydantic import BaseModel, Field
 
@@ -17,6 +17,7 @@ class Level(BaseModel):
     fs: VirtualFileSystem = Field(None)
     goals: List[Goal] = Field([])
 
+    credentials: Dict[str, str] = Field({})
 
     # more properties to load here
     # eg: hints, story snippets etc...
