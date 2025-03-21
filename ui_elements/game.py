@@ -20,7 +20,14 @@ class GameScreen(Screen):
 		self.level = level
 		self.title = f'Level #{self.level.number}: {self.level.name}'
 
-		self.karma = Karma(parent=self)
+		# TODO: Should be defined by level
+		snippets = []
+		for fname in ['./assets/level01_infos_snippet', './assets/level01_hints_snippet']:
+			with open(fname, 'r') as f:
+				snippets.append(f.read())
+
+		self.karma = Karma(parent=self,
+					 	   snippets=snippets)
 
 		self.goals_display = GoalsDisplay(goals=self.level.goals,
 										  game_screen=self)
@@ -57,30 +64,25 @@ class GameScreen(Screen):
 
 	def on_goal_achieved(self, event: GoalAchieved):
 		goal_achieved = self.goals_display._goals[self.goals_display._goal_idx - 1]
-		msg = f'I have achieved the following goal: {goal_achieved.name} ({goal_achieved.description}). Generate a congratulations message based on my achievement.'
-		self.karma.add_message(msg=msg, role='user')
-		def fetch_response():
-			response_stream = self.karma.chat()  # Generator
-			full_response = ""
-			self.app.call_from_thread(self.append_chat, settings.chat.karma_prefix)
-
-			for token in response_stream:
-				full_response += token
-				self.app.call_from_thread(self.append_chat, token)  # Stream tokens
-			
-			self.append_chat('\n')  # LLM messages do not have a \n at the end
-
-			self.karma.messages.pop(-2)
-
-		threading.Thread(target=fetch_response, daemon=True).start()
+		with open('./assets/goal_prompt_snippet', 'r') as f:
+			goal_msg = f.read()
+		goal_msg = goal_msg.replace('$goal_name$', goal_achieved.name)
+		goal_msg = goal_msg.replace('$goal_outcome$', goal_achieved.outcome)
+		self.stream_chat(message=goal_msg, drop_last=True)
 
 	def on_input_submitted(self, event: Input.Submitted) -> None:
 		if event.value:
 			self.append_chat(f'{settings.chat.player_prefix}{event.value}\n')
 			self.stream_chat(event.value)
 			event.input.clear()
+			# shold disable the input until the answer is streamed
 	
-	def stream_chat(self, message: str) -> None:
+	def stream_chat(self,
+				    message: str,
+					drop_last: bool = False) -> None:
+		input_widget = self.query_exactly_one('#chat_input', Input)
+		input_widget.disabled = True
+
 		self.karma.add_message(msg=message, role='user')
 		def fetch_response():
 			response_stream = self.karma.chat()  # Generator
@@ -92,6 +94,12 @@ class GameScreen(Screen):
 				self.app.call_from_thread(self.append_chat, token)  # Stream tokens
 			
 			self.append_chat('\n')  # LLM messages do not have a \n at the end
+
+			if drop_last:
+				self.karma.messages.pop(-2)
+			
+			input_widget.disabled = False
+			input_widget.focus()
 
 		threading.Thread(target=fetch_response, daemon=True).start()
 

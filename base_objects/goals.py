@@ -16,6 +16,7 @@ class Trigger(BaseModel):
 class Goal(BaseModel):
     name: str = Field('')
     description: str = Field('')
+    outcome: str = Field('')
     triggers: List[Trigger] = Field([])
 
     def resolved(self, vfs: VirtualFileSystem):

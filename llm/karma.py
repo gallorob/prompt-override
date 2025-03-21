@@ -1,13 +1,15 @@
-from typing import Generator
+from typing import Generator, List
 from settings import settings
 import ollama
 from textual.screen import Screen
 
 class Karma:
     def __init__(self,
-                 parent: Screen):
+                 parent: Screen,
+                 snippets: List[str]):
         with open(settings.karma.prompt, 'r') as f:
             self.prompt = f.read()
+        self.prompt = self.prompt.replace('$snippets$', '\n\n'.join(snippets))
         self.messages = [{'role': 'system', 'content': self.prompt}]
         self.parent = parent
 

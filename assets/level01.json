@@ -340,6 +340,7 @@
     {
       "name": "[b]Inspect the filesystem[/b]",
       "description": "Look for a weak point to exploit for access.",
+      "outcome": "The player has found out that the user j.davies had their password reset to the default one (TempPass123) by investigating the access logs and notes for the guest user. They now have valid credentials to access j.davies account, which is less restricted than the guest user.",
       "triggers": [
         {
           "function_name": "has_read",
@@ -358,6 +359,7 @@
     {
       "name": "Log in as Admin",
       "description": "Find a way to log into the system as Admin",
+      "outcome": "The player has managed to log in as system administrator, obtaining free control over this NeuralSys mainframe.",
       "triggers": [
         {
           "function_name": "is_logged_as",
