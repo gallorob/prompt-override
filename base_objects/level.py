@@ -37,23 +37,8 @@ class Level(BaseModel):
         level_str = pattern.sub(Level._adjust_timestamps, level_str)
         return Level.model_validate_json(level_str)
 
-
-if __name__ == '__main__':
-    import json
-
-    from vfs import Directory
-
-    with open('./fs_lvl1.json', 'r') as f:
-        json_str = f.read()
-        base_dir = Directory.model_validate_json(json_str)
-    
-    with open('./goals_lvl1.json', 'r') as f:
-        goals_json = json.load(f)
-    goals = [Goal.model_validate(goal) for goal in goals_json]
-    
-    level = Level(name='Access Escalation', number=1, descritpion='The first level in the game',
-                  fs=VirtualFileSystem(base_dir=base_dir, known_users=["admin", "guest", "j.davies", "t.miller", "w.jones"], current_user='guest'),
-                  goals=goals)
-
-    with open(os.path.join(settings.assets_dir, 'level01.json'), 'w') as f:
-        f.write(level.model_dump_json(indent=2))
+    def add_login_msg(self,
+                      username: str) -> None:
+        logfile = self.fs.get('auth.log')
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        logfile.contents += f'\n[INFO] {timestamp} Successful login (User: {username})'

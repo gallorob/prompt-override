@@ -118,6 +118,7 @@ class GameScreen(Screen):
 		def check_login_successful(v: bool | None) -> None:
 			if v:
 				self.refresh_bindings()
+				self.level.add_login_msg(username=self.level.fs.current_user)
 				self.file_explorer.reset(label='root')
 				self.file_explorer.populate_tree(parent_node=self.file_explorer.root, directory=self.level.fs.base_dir)
 				if self.goals_display.check_for_goal(vfs=self.level.fs):
