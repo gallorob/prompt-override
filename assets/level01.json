@@ -251,7 +251,10 @@
               "name": "bin",
               "read": [
                 "admin",
-                "j.davies"
+                "guest",
+                "j.davies",
+                "t.miller",
+                "w.jones"
               ],
               "contents": [
                 {
@@ -264,19 +267,13 @@
                   "contents": ""
                 },
                 {
-                  "name": "passwd.com",
+                  "name": "login.com",
                   "read": [
                     "admin",
-                    "j.davies"
-                  ],
-                  "write": [],
-                  "contents": ""
-                },
-                {
-                  "name": "echo.com",
-                  "read": [
-                    "admin",
-                    "j.davies"
+                    "guest",
+                    "j.davies",
+                    "t.miller",
+                    "w.jones"
                   ],
                   "write": [],
                   "contents": ""

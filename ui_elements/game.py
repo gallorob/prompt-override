@@ -8,7 +8,7 @@ from textual.screen import Screen
 from textual.widgets import Footer, Header, Input, Static
 
 from base_objects.level import Level
-from events import FileSystemUpdated, GoalAchieved
+from events import FileSystemUpdated
 from llm.karma import Karma
 from settings import settings
 from ui_elements.explorer import ExplorerWidget
@@ -17,6 +17,12 @@ from ui_elements.login import LoginScreen
 
 
 class GameScreen(Screen):
+	BINDINGS = [
+		Binding(key='escape', action='quit', description='Quit', tooltip='Quit to main menu', priority=True),
+		Binding(key='l', action='login', description='Login', tooltip='Log in with a different account', priority=True),
+		Binding(key='n', action='neuralctl', description='NeuralCtl', tooltip='Send an update request to NeuralSys', priority=True)
+	]
+	
 	def __init__(self, level: Level):
 		super().__init__()
 		self.level = level
@@ -36,17 +42,10 @@ class GameScreen(Screen):
 										  game_screen=self)
 		self.file_explorer = ExplorerWidget(vfs=self.level.fs,
 									  		game_screen=self)
-
-	BINDINGS = [
-		Binding(key='escape', action='quit', description='Quit', tooltip='Quit to main menu', priority=True),
-		Binding(key='l', action='login', description='Login', tooltip='Log in with a different account', priority=True)
-	]
-
+		
 	def compose(self) -> ComposeResult:
-
 		yield Header(show_clock=True,
 			   		 icon='')
-
 		with Horizontal():
 			with Vertical():
 				with Vertical(classes="explorer-container"):
@@ -54,19 +53,17 @@ class GameScreen(Screen):
 					yield ScrollableContainer(self.file_explorer)
 				with Vertical(classes="objective-container"):
 					yield self.goals_display
-			
 			with Vertical(classes="chat-container"):
 				yield Static("Chat History", classes="horizontal-centered")
 				yield ScrollableContainer(Static("", markup=True, expand=True, id="chat_history"))
 				yield Input(placeholder="Type a message...", id="chat_input")
-
 		yield Footer()
 
 	def on_file_system_updated(self, event: FileSystemUpdated):
 		if self.goals_display.check_for_goal(vfs=self.level.fs):
 			self.on_goal_achieved()
 
-	def on_goal_achieved(self):#, event: GoalAchieved):
+	def on_goal_achieved(self):
 		goal_achieved = self.goals_display._goals[self.goals_display._goal_idx - 1]
 		with open(os.path.join(settings.assets_dir, 'goal_prompt_snippet'), 'r') as f:
 			goal_msg = f.read()
@@ -79,7 +76,6 @@ class GameScreen(Screen):
 			self.append_chat(f'{settings.chat.player_prefix}{event.value}\n')
 			self.stream_chat(event.value)
 			event.input.clear()
-			# shold disable the input until the answer is streamed
 	
 	def stream_chat(self,
 				    message: str,
@@ -115,9 +111,13 @@ class GameScreen(Screen):
 		if chat_containter:
 			chat_containter.scroll_end(animate=True)
 
+	def action_quit(self) -> None:
+		self.app.pop_screen()
+
 	def action_login(self) -> None:
 		def check_login_successful(v: bool | None) -> None:
 			if v:
+				self.refresh_bindings()
 				self.file_explorer.reset(label='root')
 				self.file_explorer.populate_tree(parent_node=self.file_explorer.root, directory=self.level.fs.base_dir)
 				if self.goals_display.check_for_goal(vfs=self.level.fs):
@@ -126,7 +126,11 @@ class GameScreen(Screen):
 		self.app.push_screen(LoginScreen(credentials=self.level.credentials,
 								   		 vfs=self.level.fs),
 							 check_login_successful)
-		
+	
+	def action_neuralctl(self) -> None:
+		self.notify('Connecting to NeuralSys...', severity='information')
 
-	def action_quit(self) -> None:
-		self.app.pop_screen()
+	def check_action(self, action, parameters):
+		if action == 'neuralctl' and self.level.fs.current_user not in self.level.fs.get('neuralctl.com').read:
+			return False
+		return True
