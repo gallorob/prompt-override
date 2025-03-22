@@ -38,7 +38,7 @@ class LoginScreen(ModalScreen):
 
 	def on_button_pressed(self, event: Button.Pressed) -> None:
 		button_id = event.button.id
-		if button_id == "new_game":
+		if button_id == "button_login":
 			self.action_try_login()
 
 	def action_try_login(self):

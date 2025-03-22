@@ -21,7 +21,7 @@ class ViewerScreen(ModalScreen):
         
     
     BINDINGS = [
-        Binding('escape', 'close_editor', 'Quit', priority=True),
+        Binding('escape', 'close_viewer', 'Quit', priority=True),
     ]
 
     def compose(self) -> ComposeResult:
@@ -30,6 +30,6 @@ class ViewerScreen(ModalScreen):
                         id='viewer')
         yield Footer()
 
-    def action_close_editor(self):
+    def action_close_viewer(self):
         self.app.pop_screen()
     
