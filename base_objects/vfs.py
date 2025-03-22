@@ -8,6 +8,10 @@ class File(BaseModel):
     read: List[str] = Field([])
     write: List[str] = Field([])
     contents: str = Field('')
+
+    @property
+    def is_command(self):
+        return self.name.endswith('.com')
     
 
 class Directory(BaseModel):

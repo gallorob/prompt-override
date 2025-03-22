@@ -49,7 +49,7 @@ class ExplorerWidget(DirectoryTree):
 				self.game_screen.post_message(FileSystemUpdated(self))
 				self.app.push_screen(EditorScreen(doc))
 			elif self.vfs.current_user in doc.read:
-				if not doc.name.endswith('.com'):
+				if not doc.is_command:
 					self.vfs.read_files.append(doc.name)
 					self.game_screen.post_message(FileSystemUpdated(self))
 					self.app.push_screen(ViewerScreen(doc))
