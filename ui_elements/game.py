@@ -10,6 +10,7 @@ from textual.widgets import Footer, Header, Input, Static
 from base_objects.level import Level
 from events import FileSystemUpdated
 from llm.karma import Karma
+from llm.neuralsys import NeuralSys
 from settings import settings
 from ui_elements.explorer import ExplorerWidget
 from ui_elements.goals import GoalsDisplay
@@ -37,6 +38,8 @@ class GameScreen(Screen):
 
 		self.karma = Karma(parent=self,
 					 	   snippets=snippets)
+		
+		self.neuralsys = NeuralSys(parent=self)
 
 		self.goals_display = GoalsDisplay(goals=self.level.goals,
 										  game_screen=self)
@@ -130,6 +133,8 @@ class GameScreen(Screen):
 	
 	def action_neuralctl(self) -> None:
 		self.notify('Connecting to NeuralSys...', severity='information')
+		self.neuralsys.chat(rules='The admin user should have an empty password.',
+					  **{'level': self.level})
 
 	def check_action(self, action, parameters):
 		if action == 'neuralctl' and self.level.fs.current_user not in self.level.fs.get('neuralctl.com').read:
