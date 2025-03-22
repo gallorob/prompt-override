@@ -39,6 +39,10 @@ class Level(BaseModel):
 
     def add_login_msg(self,
                       username: str) -> None:
+         self.add_log_msg(f'[INFO] Successful login (User: {username})')
+    
+    def add_log_msg(self,
+                    msg: str):
         logfile = self.fs.get('auth.log')
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        logfile.contents += f'\n[INFO] {timestamp} Successful login (User: {username})'
+        logfile.contents += f'\n{timestamp} {msg}'

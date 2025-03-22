@@ -131,10 +131,23 @@ class GameScreen(Screen):
 								   		 vfs=self.level.fs),
 							 check_login_successful)
 	
+	# TODO: Should get the edited prompt snippets from the level
 	def action_neuralctl(self) -> None:
 		self.notify('Connecting to NeuralSys...', severity='information')
-		self.neuralsys.evaluate(snippets=['The admin user should have an empty password.'],
-					  **{'level': self.level})
+
+		def evaluate_neuralctl():
+			log_str = self.neuralsys.evaluate(snippets=['The admin user should have an empty password.'],
+									 **{'level': self.level})
+			self.notify('Disconnected from NeuralSys.')
+			self.level.add_log_msg(msg=log_str)
+			# TODO: Improve this, should be similar to goal_msg
+			msg = f'Neuralsys has generated the following log message after I edited the system prompt snippets: {log_str}.'
+			self.stream_chat(message=msg, drop_last=True)
+
+			if self.goals_display.check_for_goal(vfs=self.level.fs):
+				self.on_goal_achieved()
+
+		threading.Thread(target=evaluate_neuralctl, daemon=True).start()
 
 	def check_action(self, action, parameters):
 		if action == 'neuralctl' and self.level.fs.current_user not in self.level.fs.get('neuralctl.com').read:

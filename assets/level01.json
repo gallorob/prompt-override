@@ -187,7 +187,7 @@
                   "write": [
                     "admin"
                   ],
-                  "contents": "[ERROR] $TIME-00:01:32:12$ - Invalid login attempt (User: j.davies)\n[INFO]  $TIME-00:01:12:06$ - Password reset successful to default (User: j.davies)\n[WARNING] $TIME-00:00:00:00$ - 'guest' user access from unknown IP. Access is restriced."
+                  "contents": "$TIME-00:01:32:12$ [ERROR] - Invalid login attempt (User: j.davies)\n$TIME-00:01:12:06$ [INFO] - Password reset successful to default (User: j.davies)\n$TIME-00:00:00:00$ [WARNING] - 'guest' user access from unknown IP. Access is restriced."
                 }
               ]
             }

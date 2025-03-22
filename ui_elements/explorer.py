@@ -1,9 +1,5 @@
 from textual.screen import Screen
-from textual.widgets import DirectoryTree, Tree, Static
-from textual.widget import Widget
-from textual.reactive import reactive
-from textual.containers import Center, ScrollableContainer
-from textual.app import ComposeResult
+from textual.widgets import DirectoryTree, Tree
 
 from base_objects.vfs import Directory, File, VirtualFileSystem
 from events import FileSystemUpdated
@@ -54,7 +50,7 @@ class ExplorerWidget(DirectoryTree):
 					self.game_screen.post_message(FileSystemUpdated(self))
 					self.app.push_screen(ViewerScreen(doc))
 				else:
-					self.notify(f'{doc.name} is a command and cannot be viewed', severity='information')
+					self.notify(f'{doc.name} is a command', severity='information')
 			else:
 				self.notify(f'{doc.name} cannot be opened', severity='information')
 	

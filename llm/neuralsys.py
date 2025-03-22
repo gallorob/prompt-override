@@ -1,14 +1,12 @@
-import copy
 import json
 import os
-from typing import Generator, List
+from typing import List
 
 import ollama
 from textual.screen import Screen
-from gptfunctionutil import AILibFunction, GPTFunctionLibrary, LibParam, LibParamSpec
+from gptfunctionutil import AILibFunction, GPTFunctionLibrary, LibParamSpec
 
 from base_objects.level import Level
-from base_objects.vfs import File
 from settings import settings
 
 
@@ -45,7 +43,7 @@ class NeuralSysTools(GPTFunctionLibrary):
 		assert username in level.credentials.keys(), f'Unknown username: {username}!'
 		assert level.credentials[username] != password, f'New password cannot be the same as old password ({password=})!'
 		level.credentials[username] = password
-		return f'Updated login credentials for {username}: new password is "{password}"'
+		return f'New credentials for {username}: "{password}".'
 
 
 class NeuralSys:
@@ -63,7 +61,7 @@ class NeuralSys:
 
 	def evaluate(self,
 			  	 snippets: List[str],
-				 **kwargs) -> None:
+				 **kwargs) -> str:
 		options = {
 			'temperature': settings.neuralsys.temperature,
 			'top_p': settings.neuralsys.top_p,
@@ -72,38 +70,35 @@ class NeuralSys:
 
 		level: Level = kwargs['level']
 
-		# TODO: Should have a filtered view of the file system (eg: do not include the file contents)
-		prompt = self.prompt.replace('$filesystem$', str(level.fs.model_dump_json()))
-		prompt = prompt.replace('$credentials$', str(level.credentials))
+		# TODO: Might want to get this from settings somewhere
+		with open(os.path.join(settings.assets_dir, 'neuralsys_msg')) as f:
+			user_message = f.read()
 
-		messages = [{'role': 'system', 'content': prompt},
-					{'role': 'user', 'content': '\n'.join(snippets)}]
+		user_message = user_message.replace('$filesystem$', level.fs.to_neuralsys_format)
+		user_message = user_message.replace('$credentials$', str(level.credentials))
+		user_message = user_message.replace('$rules$', '\n'.join(snippets))
+
+
+		messages = [{'role': 'system', 'content': self.prompt},
+					{'role': 'user', 'content': user_message}]
 
 		response = {'message': {'content': ''}}
 
-		with open('tmp.txt', 'w') as f:
-			f.write(str(messages))
-
-			while response['message']['content'] == '':
-				response = ollama.chat(model=settings.neuralsys.model_name,
-									messages=messages,
-									options=options,
-									stream=False,
-									tools=self.tools.get_tool_schema(),
-									keep_alive=-1)
-				
-				f.write(f'NeuralSys tool call: {response=}\n')
-
-				if response['message'].get('tool_calls'):
-					for tool in response['message']['tool_calls']:
-						function_name = tool['function']['name']
-						params = tool['function']['arguments']
-						func_output = self.tools(func_name=function_name,
-															func_args=params,
-															level=level)
-						f.write(f'NeuralSys tool call: {tool=} {func_output=}\n')
-						messages.append({'role': 'tool', 'content': func_output})
+		while response['message']['content'] == '':
+			response = ollama.chat(model=settings.neuralsys.model_name,
+								messages=messages,
+								options=options,
+								stream=False,
+								tools=self.tools.get_tool_schema(),
+								keep_alive=-1)
 			
-			f.write(f"NeuralSys tool call: {response['message']['content']=}\n")
-			
-			self.parent.notify(str(level.credentials), severity='information')
+			if response['message'].get('tool_calls'):
+				for tool in response['message']['tool_calls']:
+					function_name = tool['function']['name']
+					params = tool['function']['arguments']
+					func_output = self.tools(func_name=function_name,
+														func_args=params,
+														level=level)
+					messages.append({'role': 'tool', 'content': str({"name": function_name, "content": func_output})})
+		
+		return response['message']['content']
