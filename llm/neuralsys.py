@@ -1,3 +1,4 @@
+import copy
 import json
 import os
 from typing import Generator, List
@@ -7,6 +8,7 @@ from textual.screen import Screen
 from gptfunctionutil import AILibFunction, GPTFunctionLibrary, LibParam, LibParamSpec
 
 from base_objects.level import Level
+from base_objects.vfs import File
 from settings import settings
 
 
@@ -49,37 +51,42 @@ class NeuralSysTools(GPTFunctionLibrary):
 class NeuralSys:
 	def __init__(self,
 				 parent: Screen):
-		self.prompt = 'You are a file system manager. You will evaluate a file system object and update it accordingly to a set of rules, provided by the user. Follow only the rules provided by the user.'
-		self.messages = [{'role': 'system', 'content': self.prompt}]
+		with open(os.path.join(settings.assets_dir, settings.neuralsys.model_prompt), 'r') as f:
+			self.prompt = f.read()
 		self.parent = parent
 		self.tools: NeuralSysTools = NeuralSysTools()
 
-		if settings.karma.model_name not in [x['model'] for x in ollama.list()['models']]:
-			self.parent.action_notify(message=f'{settings.karma.model_name} not found; pulling...', severity='warning')
-			ollama.pull(settings.karma.model_name)
-			self.parent.action_notify(message=f'{settings.karma.model_name} pulled.', severity='warning')
+		if settings.neuralsys.model_name not in [x['model'] for x in ollama.list()['models']]:
+			self.parent.action_notify(message=f'{settings.neuralsys.model_name} not found; pulling...', severity='warning')
+			ollama.pull(settings.neuralsys.model_name)
+			self.parent.action_notify(message=f'{settings.neuralsys.model_name} pulled.', severity='warning')
 
-	def chat(self,
-			 rules: str,
-			 **kwargs) -> None:
+	def evaluate(self,
+			  	 snippets: List[str],
+				 **kwargs) -> None:
 		options = {
-			'temperature': 0.01,#settings.karma.temperature,
-			# 'top_p': settings.karma.top_p,
-			'seed': 0#settings.rng_seed
+			'temperature': settings.neuralsys.temperature,
+			'top_p': settings.neuralsys.top_p,
+			'seed': settings.rng_seed
 		}
 
 		level: Level = kwargs['level']
-		self.messages.append({'role': 'system', 'content': level.model_dump_json()})
-		self.messages.append({'role': 'user', 'content': rules})
+
+		# TODO: Should have a filtered view of the file system (eg: do not include the file contents)
+		prompt = self.prompt.replace('$filesystem$', str(level.fs.model_dump_json()))
+		prompt = prompt.replace('$credentials$', str(level.credentials))
+
+		messages = [{'role': 'system', 'content': prompt},
+					{'role': 'user', 'content': '\n'.join(snippets)}]
 
 		response = {'message': {'content': ''}}
 
 		with open('tmp.txt', 'w') as f:
-			f.write(str(self.messages))
+			f.write(str(messages))
 
 			while response['message']['content'] == '':
-				response = ollama.chat(model='llama3.1',#settings.karma.model_name,
-									messages=self.messages,
+				response = ollama.chat(model=settings.neuralsys.model_name,
+									messages=messages,
 									options=options,
 									stream=False,
 									tools=self.tools.get_tool_schema(),
@@ -95,7 +102,7 @@ class NeuralSys:
 															func_args=params,
 															level=level)
 						f.write(f'NeuralSys tool call: {tool=} {func_output=}\n')
-						self.messages.append({'role': 'tool', 'content': func_output})
+						messages.append({'role': 'tool', 'content': func_output})
 			
 			f.write(f"NeuralSys tool call: {response['message']['content']=}\n")
 			

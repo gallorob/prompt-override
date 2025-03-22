@@ -133,7 +133,7 @@ class GameScreen(Screen):
 	
 	def action_neuralctl(self) -> None:
 		self.notify('Connecting to NeuralSys...', severity='information')
-		self.neuralsys.chat(rules='The admin user should have an empty password.',
+		self.neuralsys.evaluate(snippets=['The admin user should have an empty password.'],
 					  **{'level': self.level})
 
 	def check_action(self, action, parameters):
