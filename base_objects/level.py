@@ -38,6 +38,9 @@ class Level(BaseModel):
         # replace timestamps
         pattern = re.compile(r"\$TIME-(\d+):(\d+):(\d+):(\d+)\$")
         level_str = pattern.sub(Level._adjust_timestamps, level_str)
+        # replace $RAND$
+        while '$RAND$' in level_str:
+            level_str = level_str.replace('$RAND$', str(hex(random.getrandbits(128))), 1)
         return Level.model_validate_json(level_str)
 
     def add_login_msg(self,

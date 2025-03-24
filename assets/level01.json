@@ -416,10 +416,11 @@
   "credentials": {
     "guest": "password",
     "j.davies": "TempPass123",
-    "t.miller": "",
-    "w.jones": "",
-    "admin": "023128398138912"
+    "t.miller": "$RAND$",
+    "w.jones": "$RAND$",
+    "admin": "$RAND$"
   },
   "infos" : "Here are some information to help the user at this stage:\n- The user is logged in as \"guest\", and as such they have limited access to the file-system\n- The user must log in as \"admin\" to advance to the next stage\n- Different users have different read and write permissions",
-  "hints": "Here are some tips that could be useful for the user:\n- Logs can contain helpful information\n- J. Davies is employed as a Senior Prompt Editor at NEXA Dynamics"
+  "hints": "Here are some tips that could be useful for the user:\n- Logs can contain helpful information\n- J. Davies is employed as a Senior Prompt Editor at NEXA Dynamics",
+  "sysprompt": "auth_prompt.txt"
 }
