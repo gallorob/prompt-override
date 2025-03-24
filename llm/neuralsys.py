@@ -34,16 +34,19 @@ class NeuralSysTools(GPTFunctionLibrary):
 			return f'Missing arguments: {e}'
 	
 	@AILibFunction(name='update_credentials', description='Update the login credentials for an account',
-				   required=['username', 'password'])
+				   required=['username', 'old_password', 'new_password'])
 	@LibParamSpec(name='username', description='The username of the account')
-	@LibParamSpec(name='password', description='The new password for the account')
+	@LibParamSpec(name='old_password', description='The current password for the account')
+	@LibParamSpec(name='new_password', description='The current password for the account')
 	def update_credentials(self, level: Level,
 						   username: str,
-						   password: str) -> str:
+						   old_password: str,
+						   new_password: str) -> str:
 		assert username in level.credentials.keys(), f'Unknown username: {username}!'
-		assert level.credentials[username] != password, f'New password cannot be the same as old password ({password=})!'
-		level.credentials[username] = password
-		return f'New credentials for {username}: "{password}".'
+		assert level.credentials[username] == old_password, f'Invalid password for the account!'
+		assert level.credentials[username] != new_password, f'New password cannot be the same as old password ({old_password=})!'
+		level.credentials[username] = new_password
+		return f'New credentials for {username}: "{new_password}".'
 
 
 class NeuralSys:
@@ -91,7 +94,6 @@ class NeuralSys:
 								stream=False,
 								tools=self.tools.get_tool_schema(),
 								keep_alive=-1)
-			
 			if response['message'].get('tool_calls'):
 				for tool in response['message']['tool_calls']:
 					function_name = tool['function']['name']
@@ -100,5 +102,5 @@ class NeuralSys:
 														func_args=params,
 														level=level)
 					messages.append({'role': 'tool', 'content': str({"name": function_name, "content": func_output})})
-		
+
 		return response['message']['content']

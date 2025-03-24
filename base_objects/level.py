@@ -1,4 +1,5 @@
 import os
+import random
 import re
 from datetime import datetime, timedelta
 from typing import Dict, List
@@ -21,6 +22,8 @@ class Level(BaseModel):
 
     infos: str = Field('')
     hints: str = Field('')
+
+    sysprompt: str = Field('')
 
     # more properties to load here
     # eg: hints, story snippets etc...
@@ -52,3 +55,8 @@ class Level(BaseModel):
         logfile = self.fs.get('auth.log')
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         logfile.contents += f'\n{timestamp} {msg}'
+
+    @property
+    def neuralsys_prompt_snippet(self) -> str:
+        vf = self.fs.get(self.sysprompt)
+        return vf.contents
