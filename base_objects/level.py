@@ -19,6 +19,9 @@ class Level(BaseModel):
 
     credentials: Dict[str, str] = Field({})
 
+    infos: str = Field('')
+    hints: str = Field('')
+
     # more properties to load here
     # eg: hints, story snippets etc...
 

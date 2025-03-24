@@ -29,12 +29,7 @@ class GameScreen(Screen):
 		self.level = level
 		self.title = f'Level #{self.level.number}: {self.level.name}'
 
-		# TODO: Should be defined by level
-		snippets = []
-		for fname in [os.path.join(settings.assets_dir, 'level01_infos_snippet'),
-					  os.path.join(settings.assets_dir, 'level01_hints_snippet')]:
-			with open(fname, 'r') as f:
-				snippets.append(f.read())
+		snippets = [self.level.infos, self.level.hints]
 
 		self.karma = Karma(parent=self,
 					 	   snippets=snippets)
