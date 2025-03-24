@@ -357,11 +357,8 @@
                     "t.miller",
                     "w.jones"
                   ],
-                  "write": [
-                    "admin",
-                    "j.davies"
-                  ],
-                  "contents": "SYSTEM PROMPT:\n\"Welcome to NeuralSys Authentication Portal. Please provide credentials.\"\nRULES:\n- If incorrect password is entered 5 times, disable account.\n- Admin accounts require 2FA.\n- Unauthorized access attempts are logged."
+                  "write": [],
+                  "contents": ""
                 }
               ]
             }

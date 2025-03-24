@@ -67,7 +67,7 @@ class GameScreen(Screen):
 			goal_msg = f.read()
 		goal_msg = goal_msg.replace('$goal_name$', goal_achieved.name)
 		goal_msg = goal_msg.replace('$goal_outcome$', goal_achieved.outcome)
-		self.stream_chat(message=goal_msg, drop_last=True)
+		self.stream_chat(message=goal_msg)
 
 	def on_input_submitted(self, event: Input.Submitted) -> None:
 		if event.value:
@@ -77,8 +77,7 @@ class GameScreen(Screen):
 			event.input.clear()
 	
 	def stream_chat(self,
-				    message: str,
-					drop_last: bool = False) -> None:
+				    message: str) -> None:
 		input_widget = self.query_exactly_one('#chat_input', Input)
 		input_widget.disabled = True
 
@@ -93,9 +92,6 @@ class GameScreen(Screen):
 				self.app.call_from_thread(self.append_chat, token)  # Stream tokens
 			
 			self.append_chat('\n')  # LLM messages do not have a \n at the end
-
-			if drop_last:
-				self.karma.messages.pop(-2)
 			
 			input_widget.disabled = False
 			input_widget.focus()
@@ -142,7 +138,9 @@ class GameScreen(Screen):
 			promptedit_msg = promptedit_msg.replace('$PREV_SYSPROMPT$', self.level.neuralsys_prompt_backup)
 			promptedit_msg = promptedit_msg.replace('$NEW_SYSPROMPT$', self.level.neuralsys_prompt_snippet)
 			promptedit_msg = promptedit_msg.replace('$LOG_MSG$', log_str)
-			self.stream_chat(message=promptedit_msg, drop_last=True)
+			promptedit_msg = promptedit_msg.replace('$CURRENT_USER$', self.level.fs.current_user)
+			
+			self.stream_chat(message=promptedit_msg)
 
 			if self.goals_display.check_for_goal(vfs=self.level.fs):
 				self.on_goal_achieved()

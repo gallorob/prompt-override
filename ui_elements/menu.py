@@ -51,6 +51,7 @@ class MenuScreen(Screen):
 
 	def action_new_game(self) -> None:
 		level = Level.from_file(os.path.join(settings.assets_dir, 'level01.json'))
+		level.initialize()
 		self.app.push_screen(GameScreen(level=level))
 
 	def action_settings(self) -> None:

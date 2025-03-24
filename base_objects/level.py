@@ -28,6 +28,12 @@ class Level(BaseModel):
     # more properties to load here
     # eg: hints, story snippets etc...
 
+    def initialize(self) -> None:
+        # set backup for system prompt snippet
+        bak_fname = self.sysprompt.split('.')[0] + '.bak'
+        bak_file = self.fs.get(bak_fname)
+        bak_file.contents = self.neuralsys_prompt_snippet
+
     @staticmethod
     def _adjust_timestamps(match: re.Match) -> str:
         days, hours, minutes, seconds = map(int, match.groups())

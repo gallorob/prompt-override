@@ -1,4 +1,2 @@
-The player has achieved the following goal: $goal_name$.
+I have achieved the following goal: $goal_name$.
 $goal_outcome$
-
-Generate a congratulations message based on this achievement.
