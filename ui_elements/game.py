@@ -76,7 +76,8 @@ class GameScreen(Screen):
 
 	def on_input_submitted(self, event: Input.Submitted) -> None:
 		if event.value:
-			self.append_chat(f'{settings.chat.player_prefix}{event.value}\n')
+			prefix = settings.chat.player_prefix.replace('$USER$', self.level.fs.current_user)
+			self.append_chat(f'{prefix}{event.value}\n')
 			self.stream_chat(event.value)
 			event.input.clear()
 	

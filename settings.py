@@ -10,7 +10,7 @@ class LLMSetting(BaseSettings):
     top_k: int = Field(default=10, gt=0, description='The LLM top-k')
 
 class ChatSettings(BaseSettings):
-    player_prefix: str = Field(default='[bold]localhost[/bold]> ', description='The player prefix on the chat')
+    player_prefix: str = Field(default='[bold]$USER$[/bold]> ', description='The player prefix on the chat')
     karma_prefix: str = Field(default='[bold]KARMA[/bold]> ', description='KARMA prefix on the chat')
 
 class Settings(BaseSettings):
