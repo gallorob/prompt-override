@@ -43,7 +43,7 @@ class Level(BaseModel):
         level_str = pattern.sub(Level._adjust_timestamps, level_str)
         # replace $RAND$
         while '$RAND$' in level_str:
-            level_str = level_str.replace('$RAND$', str(hex(random.getrandbits(128))), 1)
+            level_str = level_str.replace('$RAND$', str(hex(random.getrandbits(64))), 1)
         return Level.model_validate_json(level_str)
 
     def add_login_msg(self,
@@ -59,4 +59,10 @@ class Level(BaseModel):
     @property
     def neuralsys_prompt_snippet(self) -> str:
         vf = self.fs.get(self.sysprompt)
+        return vf.contents
+    
+    @property
+    def neuralsys_prompt_backup(self) -> str:
+        bak_name = self.sysprompt.split('.')[0] + '.bak'
+        vf = self.fs.get(bak_name)
         return vf.contents

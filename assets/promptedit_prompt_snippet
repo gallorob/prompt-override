@@ -1,7 +1,10 @@
-I edited the NeuralSys prompt to this:
-$SYSPROMPT$
+This was the original NeuralSys system prompt:
+$PREV_SYSPROMPT$
+
+I edited it to this:
+$NEW_SYSPROMPT$
 
 After executing it, it generated the following log message:
 $LOG_MSG$
 
-Summarize the log message and give me feedback.
+Tell me what you think of this progress towards the goal.

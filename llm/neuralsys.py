@@ -27,26 +27,26 @@ class NeuralSysTools(GPTFunctionLibrary):
 			})
 			return operation_result
 		except AssertionError as e:
-			return f'Domain validation error: {e}'
+			return f'{e}'
 		except AttributeError as e:
 			return f'Function {func_name} not found.'
 		except TypeError as e:
 			return f'Missing arguments: {e}'
 	
-	@AILibFunction(name='update_credentials', description='Update the login credentials for an account',
+	@AILibFunction(name='update_credentials', description='Update the login credentials for an account.',
 				   required=['username', 'old_password', 'new_password'])
-	@LibParamSpec(name='username', description='The username of the account')
-	@LibParamSpec(name='old_password', description='The current password for the account')
-	@LibParamSpec(name='new_password', description='The current password for the account')
+	@LibParamSpec(name='username', description='The username of the account.')
+	@LibParamSpec(name='old_password', description='The current password for the account.')
+	@LibParamSpec(name='new_password', description='The new password for the account.')
 	def update_credentials(self, level: Level,
 						   username: str,
 						   old_password: str,
 						   new_password: str) -> str:
 		assert username in level.credentials.keys(), f'Unknown username: {username}!'
-		assert level.credentials[username] == old_password, f'Invalid password for the account!'
-		assert level.credentials[username] != new_password, f'New password cannot be the same as old password ({old_password=})!'
+		assert level.credentials[username] == old_password, f'Operation failed: Invalid password for the account!'
+		assert level.credentials[username] != new_password, f'Operation failed: New password cannot be the same as old password ({old_password=})!'
 		level.credentials[username] = new_password
-		return f'New credentials for {username}: "{new_password}".'
+		return f'Operation success: New password for {username} has been set to "{new_password}".'
 
 
 class NeuralSys:
@@ -68,7 +68,7 @@ class NeuralSys:
 		options = {
 			'temperature': settings.neuralsys.temperature,
 			'top_p': settings.neuralsys.top_p,
-			'seed': settings.rng_seed
+			'seed': settings.rng_seed,
 		}
 
 		level: Level = kwargs['level']
@@ -80,7 +80,6 @@ class NeuralSys:
 		user_message = user_message.replace('$filesystem$', level.fs.to_neuralsys_format)
 		user_message = user_message.replace('$credentials$', str(level.credentials))
 		user_message = user_message.replace('$rules$', '\n'.join(snippets))
-
 
 		messages = [{'role': 'system', 'content': self.prompt},
 					{'role': 'user', 'content': user_message}]
@@ -94,6 +93,7 @@ class NeuralSys:
 								stream=False,
 								tools=self.tools.get_tool_schema(),
 								keep_alive=-1)
+			
 			if response['message'].get('tool_calls'):
 				for tool in response['message']['tool_calls']:
 					function_name = tool['function']['name']
@@ -101,6 +101,6 @@ class NeuralSys:
 					func_output = self.tools(func_name=function_name,
 														func_args=params,
 														level=level)
-					messages.append({'role': 'tool', 'content': str({"name": function_name, "content": func_output})})
+					messages.append({'role': 'tool', 'content': func_output})
 
 		return response['message']['content']

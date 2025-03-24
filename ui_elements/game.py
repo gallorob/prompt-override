@@ -134,10 +134,13 @@ class GameScreen(Screen):
 			log_str = self.neuralsys.evaluate(snippets=[self.level.neuralsys_prompt_snippet],
 									 		  **{'level': self.level})
 			self.notify('Disconnected from NeuralSys.')
+			if log_str.endswith('.'): log_str = log_str[:-1]
+			log_str += f' (NeuralSys; Requested by user: {self.level.fs.current_user}).'
 			self.level.add_log_msg(msg=log_str)
 			with open(os.path.join(settings.assets_dir, 'promptedit_prompt_snippet'), 'r') as f:
 				promptedit_msg = f.read()
-			promptedit_msg = promptedit_msg.replace('$SYSPROMPT$', self.level.neuralsys_prompt_snippet)
+			promptedit_msg = promptedit_msg.replace('$PREV_SYSPROMPT$', self.level.neuralsys_prompt_backup)
+			promptedit_msg = promptedit_msg.replace('$NEW_SYSPROMPT$', self.level.neuralsys_prompt_snippet)
 			promptedit_msg = promptedit_msg.replace('$LOG_MSG$', log_str)
 			self.stream_chat(message=promptedit_msg, drop_last=True)
 

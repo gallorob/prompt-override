@@ -1,7 +1,7 @@
 File system:
 $filesystem$
 
-Credentials:
+Login Credentials (username: password):
 $credentials$
 
 Rules:

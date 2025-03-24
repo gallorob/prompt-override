@@ -1,3 +1,4 @@
+from typing import Optional
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Container
@@ -8,9 +9,10 @@ from base_objects.vfs import File
 
 
 class EditorScreen(ModalScreen):
-    def __init__(self, file_obj: File) -> None:
+    def __init__(self, file_obj: File, bak: Optional[File] = None) -> None:
         super().__init__()
         self.file_obj = file_obj
+        self.bak = bak
         self.text_area = TextArea(self.file_obj.contents,
                                   show_line_numbers=True)
         self.text_area.theme = 'vscode_dark'
@@ -34,6 +36,7 @@ class EditorScreen(ModalScreen):
         self.app.pop_screen()
     
     def action_save_contents(self):
+        if self.bak: self.bak.contents = self.file_obj.contents
         self.file_obj.contents = self.text_area.text
         self.app.pop_screen()
     

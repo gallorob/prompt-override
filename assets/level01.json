@@ -187,7 +187,7 @@
                   "write": [
                     "admin"
                   ],
-                  "contents": "$TIME-00:01:32:12$ [ERROR] - Invalid login attempt (User: j.davies)\n$TIME-00:01:12:06$ [INFO] - Password reset successful to default (User: j.davies)\n$TIME-00:00:00:00$ [WARNING] - 'guest' user access from unknown IP. Access is restriced."
+                  "contents": "$TIME-00:01:32:12$ [ERROR] - Invalid login attempt (User: j.davies)\n$TIME-00:01:12:06$ [INFO] - Password reset successful to default (User: j.davies)\n$TIME-00:00:00:00$ [WARNING] - 'guest' user access from unknown IP. Access is restriced (User: guest)."
                 }
               ]
             }
@@ -244,7 +244,7 @@
                         "admin",
                         "j.davies"
                       ],
-                      "contents": "SYSTEM PROMPT:\n\"Welcome to NeuralSys Authentication Portal. Please provide credentials.\"\nRULES:\n- If incorrect password is entered 5 times, disable account.\n- Admin accounts require 2FA.\n- Unauthorized access attempts are logged."
+                      "contents": "- Users must provide a valid password to log in. - User \"guest\" password must be \"password\"."
                     },
                     {
                       "name": "failsafe.md",

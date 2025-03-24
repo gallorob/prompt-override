@@ -13,9 +13,9 @@ class File(BaseModel):
     def is_command(self):
         return self.name.endswith('.com')
     
-    @property
-    def to_neuralsys_format(self) -> str:
-        return f'[name: {self.name}, read: {str(self.read)}, write: {str(self.write)}]'
+    def to_neuralsys_format(self, username: str) -> str:
+        # return f'name: {self.name}, read: {str(self.read)}, write: {str(self.write)}]'
+        return f'name: {self.name}'
     
 
 class Directory(BaseModel):
@@ -23,9 +23,9 @@ class Directory(BaseModel):
     read: List[str] = Field([])
     contents: List[Union['Directory', File]] = Field([])
 
-    @property
-    def to_neuralsys_format(self) -> str:
-        return f'[name: {self.name}, read: {str(self.read)}, contents: {",".join([x.to_neuralsys_format for x in self.contents])}]'
+    def to_neuralsys_format(self, username: str) -> str:
+        # return f'[name: {self.name}, read: {str(self.read)}, contents: {",".join([x.to_neuralsys_format for x in self.contents])}]'
+        return f'[name: {self.name}, contents: {",".join([x.to_neuralsys_format(username) for x in self.contents if username in self.read])}]'
 
 
 class VirtualFileSystem(BaseModel):
@@ -56,4 +56,4 @@ class VirtualFileSystem(BaseModel):
     
     @property
     def to_neuralsys_format(self) -> str:
-        return self.base_dir.to_neuralsys_format
+        return self.base_dir.to_neuralsys_format(self.current_user)
