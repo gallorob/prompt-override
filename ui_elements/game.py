@@ -20,8 +20,8 @@ from ui_elements.login import LoginScreen
 class GameScreen(Screen):
 	BINDINGS = [
 		Binding(key='escape', action='quit', description='Quit', tooltip='Quit to main menu', priority=True),
-		Binding(key='l', action='login', description='Login', tooltip='Log in with a different account', priority=True),
-		Binding(key='n', action='neuralctl', description='NeuralCtl', tooltip='Send an update request to NeuralSys', priority=True)
+		Binding(key='ctrl+l', action='login', description='Login', tooltip='Log in with a different account', priority=True),
+		Binding(key='ctrl+n', action='neuralctl', description='NeuralCtl', tooltip='Send an update request to NeuralSys', priority=True)
 	]
 	
 	def __init__(self, level: Level):
@@ -150,4 +150,6 @@ class GameScreen(Screen):
 	def check_action(self, action, parameters):
 		if action == 'neuralctl' and self.level.fs.current_user not in self.level.fs.get('neuralctl.com').read:
 			return False
+		if action == 'login':
+			return True
 		return True
