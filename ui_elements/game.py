@@ -102,6 +102,8 @@ class GameScreen(Screen):
 			if log_str.endswith('.'): log_str = log_str[:-1]
 			log_str += f' (NeuralSys; Requested by user: {self.level.fs.current_user}).'
 			self.level.add_log_msg(msg=log_str)
+			if 'SYSERROR' in log_str:
+				self.level.rollback_changes()
 			with open(os.path.join(settings.assets_dir, 'promptedit_prompt_snippet'), 'r') as f:
 				promptedit_msg = f.read()
 			promptedit_msg = promptedit_msg.replace('$PREV_SYSPROMPT$', self.level.neuralsys_prompt_backup)

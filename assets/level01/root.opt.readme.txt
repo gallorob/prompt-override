@@ -1,8 +1,17 @@
                     Davies
-@Jones, stop trying to access the commands in /opt/bin! Your job is to validate updates, not interacting with NeuralSys! Only I can! Stay in your lane.
+@Jones, stop trying to access the commands! Your job is to validate updates, not interacting with NeuralSys! Only I can! Stay in your lane.
 
                     Jones
 @Davies, shut the fuck up, I told you I need to use those commands, give me access.
 
                     Miller
 Guys, stop fighting, @Jones open a ticket with TITAN and try be persuasive. And no swearing.
+
+                    Davies
+@Jones, did you just try to change my password?
+
+                    Jones
+What if I did? You know I have the permission to do so ;)
+
+                    Davies
+Enjoy not having access to the prompts then dipshit. I'm telling HR.

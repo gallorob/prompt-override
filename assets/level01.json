@@ -307,7 +307,8 @@
                   "name": "neuralctl.com",
                   "read": [
                     "admin",
-                    "j.davies"
+                    "j.davies",
+                    "t.miller"
                   ],
                   "write": [],
                   "contents": ""

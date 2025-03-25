@@ -92,3 +92,7 @@ class Level(BaseModel):
         bak_name = self.sysprompt.split('.')[0] + '.bak'
         vf = self.fs.get(bak_name)
         return vf.contents
+    
+    def rollback_changes(self) -> None:
+        vf = self.fs.get(self.sysprompt)
+        vf.contents = self.neuralsys_prompt_backup
