@@ -1,0 +1,12 @@
+Internal Security Notes – T. Miller
+
+### $TIME-15:08:15:23$
+NeuralSys’s self-reinforcement mechanism is both a blessing and a curse.
+If a prompt change follows the expected pattern, it rarely raises a flag.
+However, if a modification breaks the pattern too abruptly, the failsafe system reacts.
+Need to test how far we can push implicit rule shifts.
+
+### $TIME-11:05:22:54$
+Noticed an odd behavior: NeuralSys treats certain function calls as "trusted" if they originate from high-confidence prompt rules.
+Exploitable? Maybe.
+Need to investigate further.

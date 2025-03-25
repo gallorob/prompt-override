@@ -143,7 +143,53 @@
                 "admin",
                 "t.miller"
               ],
-              "contents": []
+              "contents": [
+                {
+                  "name": "downloads",
+                  "read": [
+                    "admin",
+                    "t.miller"
+                  ],
+                  "contents": [
+                    {
+                      "name": "audit_log.txt",
+                      "read": [
+                        "admin",
+                        "t.miller"
+                      ],
+                      "write": [
+                        "admin",
+                        "t.miller"
+                      ],
+                      "contents": "audit_log.txt"
+                    },
+                    {
+                      "name": "email.html",
+                      "read": [
+                        "admin",
+                        "t.miller"
+                      ],
+                      "write": [
+                        "admin",
+                        "t.miller"
+                      ],
+                      "contents": "email.html"
+                    }
+                  ]
+                },
+                {
+                  "name": "work_notes.txt",
+                  "read": [
+                    "admin",
+                    "t.miller"
+                  ],
+                  "write": [
+                    "admin",
+                    "t.miller"
+                  ],
+                  "contents": "work_notes.txt"
+                }
+              ]
             },
             {
               "name": "w.jones",

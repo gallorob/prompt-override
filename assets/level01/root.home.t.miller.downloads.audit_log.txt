@@ -1,0 +1,15 @@
+NeuralSys Audit Log – Restricted Access
+
+Log ID: #045892
+$TIME-19:01:00:12$
+Unauthorized prompt edit detected by ***/neural/CONTROL.llm
+Rollback executed. Origin: /home/j.davies/prompts/auth_prompt.txt
+
+$TIME-19:01:00:08$
+Automated update request flagged as "unusual."
+Escalated to admin review.
+User: j.davies
+
+$TIME-19:01:00:02$
+Failsafe override request received.
+Status: Denied

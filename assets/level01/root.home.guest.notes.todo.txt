@@ -10,7 +10,7 @@
 - Finish technical report for Q3.
 - Check TITAN ticket status for password reset
     (what shitty default password is
-    TemPass123? Is this really LLM tested?)
+    TempPass123? Is this really LLM tested?)
 
 ## Jones
 - Attend meeting with CEO and PR representatives.

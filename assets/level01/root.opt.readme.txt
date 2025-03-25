@@ -1,16 +1,16 @@
                     Davies
-@Jones, stop trying to access the commands! Your job is to validate updates, not interacting with NeuralSys! Only I can! Stay in your lane.
-
-                    Jones
-@Davies, shut the fuck up, I told you I need to use those commands, give me access.
+@Miller, stop trying to access the commands! Your job is to validate updates, not interacting with NeuralSys! Only I can! Stay in your lane.
 
                     Miller
-Guys, stop fighting, @Jones open a ticket with TITAN and try be persuasive. And no swearing.
-
-                    Davies
-@Jones, did you just try to change my password?
+@Davies, shut the fuck up, I told you I need to use those commands, give me access.
 
                     Jones
+Guys, stop fighting, @Miller open a ticket with TITAN and try be persuasive. And no swearing.
+
+                    Davies
+@Miller, did you just try to change my password?
+
+                    Miller
 What if I did? You know I have the permission to do so ;)
 
                     Davies

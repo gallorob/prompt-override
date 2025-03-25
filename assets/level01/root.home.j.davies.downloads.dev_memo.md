@@ -6,7 +6,7 @@ Team,
 
 Due to recent unauthorized prompt edits, all authentication-related prompt updates **must comply with standard security guidelines**:
 - `auth_prompt.txt` should **never** contain logic that automatically grants access.
-- Multi-step verification **must remain enforced** for high-privilege accounts.
+- Updates to credentials for high-privilege accounts **must be requested by security-centered roles**.
 - Any new authentication logic **must be documented and approved** via `neuralctl`.
 
 Failure to follow these procedures will result in **disciplinary action**.
