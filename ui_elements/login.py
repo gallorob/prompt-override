@@ -48,12 +48,12 @@ class LoginScreen(ModalScreen):
 		password = password_input.value
 		if username != self.vfs.current_user:
 			if username not in self.vfs.known_users:
-				self.notify(f'User {username} not found.', severity='error')
+				self.notify(f'User {username} not found.', title='Login', severity='error')
 			elif password != self.credentials[username]:
-				self.notify(f'Invalid password for user {username}.', severity='error')
+				self.notify(f'Invalid password for user {username}.', title='Login', severity='error')
 			else:
 				self.vfs.current_user = username
-				self.notify(f'Logged in as {username}', severity='information')
+				self.notify(f'Logged in as {username}', title='Login', severity='information')
 				self.dismiss(True)
 
 	def action_close_window(self):

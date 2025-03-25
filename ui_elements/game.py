@@ -93,12 +93,12 @@ class GameScreen(Screen):
 							 check_login_successful)
 	
 	def action_neuralctl(self) -> None:
-		self.notify('Connecting to NeuralSys...', severity='information')
+		self.notify('Connecting to NeuralSys...', title='NeuralCtl', severity='information')
 
 		def evaluate_neuralctl():
 			log_str = self.neuralsys.evaluate(snippets=[self.level.neuralsys_prompt_snippet],
 									 		  **{'level': self.level})
-			self.notify('Disconnected from NeuralSys.')
+			self.notify('Disconnected from NeuralSys.', title='NeuralCtl', severity='information')
 			if log_str.endswith('.'): log_str = log_str[:-1]
 			log_str += f' (NeuralSys; Requested by user: {self.level.fs.current_user}).'
 			self.level.add_log_msg(msg=log_str)
