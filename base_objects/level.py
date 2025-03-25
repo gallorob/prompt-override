@@ -46,7 +46,7 @@ class Level(BaseModel):
                            path_partial: Optional[str]) -> None:
         if path_partial: path_partial = '.'.join([path_partial, fname.name])
         else: path_partial = fname.name
-        if isinstance(fname.contents, str):
+        if isinstance(fname, File):
             if not fname.is_command:
                 with open(os.path.join(settings.assets_dir, f'level{str(level_n).zfill(2)}', path_partial), 'r') as f:
                     f_contents = f.read()
@@ -66,14 +66,10 @@ class Level(BaseModel):
             level_str = f.read()
         # replace $RAND$
         while '$RAND$' in level_str:
-            level_str = level_str.replace('$RAND$', str(hex(random.getrandbits(64))), 1)
-        # load file contents from asset
+            level_str = level_str.replace('$RAND$', str(hex(random.getrandbits(64))).replace('0x', ''), 1)
         level = Level.model_validate_json(level_str)
-        
+        # load file contents from asset
         Level._set_file_contents(fname=level.fs.base_dir, level_n=level.number, path_partial=None)
-        
-        
-
         return level
 
     def add_login_msg(self,

@@ -12,6 +12,7 @@ from events import FileSystemUpdated
 from llm.karma import Karma
 from llm.neuralsys import NeuralSys
 from settings import settings
+from ui_elements.chat import ChatWidget
 from ui_elements.explorer import ExplorerWidget
 from ui_elements.goals import GoalsDisplay
 from ui_elements.login import LoginScreen
@@ -30,9 +31,6 @@ class GameScreen(Screen):
 		self.title = f'Level #{self.level.number}: {self.level.name}'
 
 		snippets = [self.level.infos, self.level.hints]
-
-		self.karma = Karma(parent=self,
-					 	   snippets=snippets)
 		
 		self.neuralsys = NeuralSys(parent=self)
 
@@ -41,20 +39,26 @@ class GameScreen(Screen):
 		self.file_explorer = ExplorerWidget(vfs=self.level.fs,
 									  		game_screen=self)
 		
+		self.karma = Karma(parent=self,
+					 	   snippets=snippets)
+
+		self.chat = ChatWidget(level=self.level,
+						 	   game_screen=self,
+							   karma=self.karma)
+		self._fs_title = '($user$) File System:'
+		
 	def compose(self) -> ComposeResult:
 		yield Header(show_clock=True,
 			   		 icon='')
 		with Horizontal():
 			with Vertical():
 				with Vertical(classes="explorer-container"):
-					yield Static(content='Level Objectives:', classes="horizontal-centered")
+					yield Static(content=self._fs_title.replace('$user$', self.level.fs.current_user), classes="horizontal-centered", id="fs_title")
 					yield ScrollableContainer(self.file_explorer)
 				with Vertical(classes="objective-container"):
 					yield self.goals_display
 			with Vertical(classes="chat-container"):
-				yield Static("Chat History", classes="horizontal-centered")
-				yield ScrollableContainer(Static("", markup=True, expand=True, id="chat_history"))
-				yield Input(placeholder="Type a message...", id="chat_input")
+				yield self.chat
 		yield Footer()
 
 	def on_file_system_updated(self, event: FileSystemUpdated):
@@ -67,44 +71,7 @@ class GameScreen(Screen):
 			goal_msg = f.read()
 		goal_msg = goal_msg.replace('$goal_name$', goal_achieved.name)
 		goal_msg = goal_msg.replace('$goal_outcome$', goal_achieved.outcome)
-		self.stream_chat(message=goal_msg)
-
-	def on_input_submitted(self, event: Input.Submitted) -> None:
-		if event.value:
-			prefix = settings.chat.player_prefix.replace('$USER$', self.level.fs.current_user)
-			self.append_chat(f'{prefix}{event.value}\n')
-			self.stream_chat(event.value)
-			event.input.clear()
-	
-	def stream_chat(self,
-				    message: str) -> None:
-		input_widget = self.query_exactly_one('#chat_input', Input)
-		input_widget.disabled = True
-
-		self.karma.add_message(msg=message, role='user')
-		def fetch_response():
-			response_stream = self.karma.chat()  # Generator
-			full_response = ""
-			self.app.call_from_thread(self.append_chat, settings.chat.karma_prefix)
-
-			for token in response_stream:
-				full_response += token
-				self.app.call_from_thread(self.append_chat, token)  # Stream tokens
-			
-			self.append_chat('\n')  # LLM messages do not have a \n at the end
-			
-			input_widget.disabled = False
-			input_widget.focus()
-
-		threading.Thread(target=fetch_response, daemon=True).start()
-
-	def append_chat(self, text: str) -> None:
-		chat_history = self.query_one("#chat_history", Static)
-		chat_history.update(chat_history.renderable + text)
-
-		chat_containter: ScrollableContainer = chat_history.parent
-		if chat_containter:
-			chat_containter.scroll_end(animate=True)
+		self.chat.stream_chat(message=goal_msg)
 
 	def action_quit(self) -> None:
 		self.app.pop_screen()
@@ -116,6 +83,8 @@ class GameScreen(Screen):
 				self.level.add_login_msg(username=self.level.fs.current_user)
 				self.file_explorer.reset(label='root')
 				self.file_explorer.populate_tree(parent_node=self.file_explorer.root, directory=self.level.fs.base_dir)
+				static_fstitle = self.query_exactly_one('#fs_title', Static)
+				static_fstitle.update(content=self._fs_title.replace('$user$', self.level.fs.current_user))
 				if self.goals_display.check_for_goal(vfs=self.level.fs):
 					self.on_goal_achieved()
 
@@ -140,7 +109,7 @@ class GameScreen(Screen):
 			promptedit_msg = promptedit_msg.replace('$LOG_MSG$', log_str)
 			promptedit_msg = promptedit_msg.replace('$CURRENT_USER$', self.level.fs.current_user)
 			
-			self.stream_chat(message=promptedit_msg)
+			self.chat.stream_chat(message=promptedit_msg)
 
 			if self.goals_display.check_for_goal(vfs=self.level.fs):
 				self.on_goal_achieved()
