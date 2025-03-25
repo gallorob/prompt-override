@@ -5,7 +5,7 @@ from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Horizontal, ScrollableContainer, Vertical
 from textual.screen import Screen
-from textual.widgets import Footer, Header, Input, Static
+from textual.widgets import Footer, Header, Static
 
 from base_objects.level import Level
 from events import FileSystemUpdated
@@ -117,8 +117,7 @@ class GameScreen(Screen):
 		threading.Thread(target=evaluate_neuralctl, daemon=True).start()
 
 	def check_action(self, action, parameters):
-		if action == 'neuralctl' and self.level.fs.current_user not in self.level.fs.get('neuralctl.com').read:
-			return False
-		if action == 'login':
-			return True
+		if action in ['login', 'neuralctl']:
+			return self.level.fs.current_user in self.level.fs.get(f'{action}.com').read
 		return True
+		
