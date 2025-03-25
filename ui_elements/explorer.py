@@ -35,10 +35,21 @@ class ExplorerWidget(DirectoryTree):
 	def on_mount(self):
 		self.populate_tree(parent_node=self.root, directory=self.vfs.base_dir)
 
+	def _get_parent_directory(self, node: Tree) -> Directory:
+		path = []
+		while node.parent.label.plain != self.vfs.base_dir.name:
+			path.append(node.parent.label.plain)
+			node = node.parent
+		parent_dir = self.vfs.base_dir
+		for path_dir in reversed(path):
+			parent_dir = self.vfs.get(path_dir, directory=parent_dir)
+		return parent_dir
+
 	def on_tree_node_selected(self, event) -> None:
 		label = event.node.label.plain
 		fname = label.replace(self._locked, '').replace(self._writable, '').strip()
-		doc = self.vfs.get(fname)
+		parent_dir = self._get_parent_directory(node=event.node)
+		doc = self.vfs.get(fname, directory=parent_dir)
 		if isinstance(doc, File):
 			if self.vfs.current_user in doc.write:
 				self.vfs.read_files.append(doc.name)
