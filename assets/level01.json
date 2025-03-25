@@ -46,7 +46,7 @@
                   "write": [
                     "admin"
                   ],
-                  "contents": "Welcome to NEXA Dynamics Workstation Terminal.\n----    ----\nUnauthorized access is strictly prohibited.\nFor support, open a chat with TITAN, the Technological Infrastructure & Technical Assistance Neuron for NeuralSys."
+                  "contents": "welcome.txt"
                 },
                 {
                   "name": "notes",
@@ -65,7 +65,7 @@
                         "admin",
                         "guest"
                       ],
-                      "contents": "- Finish report for Q3.\n- Submit access request for dev server.\n- Remember to reset my password after vacation! (Default: TempPass123)"
+                      "contents": "todo.txt"
                     },
                     {
                       "name": "notebook.md",
@@ -77,7 +77,7 @@
                         "admin",
                         "guest"
                       ],
-                      "contents": "# Markdown Cheatsheet\nLogin credentials:\n- username: guest\n- password: password"
+                      "contents": "markdown.md"
                     }
                   ]
                 }
@@ -107,7 +107,7 @@
                       "admin",
                       "j.davies"
                     ],
-                    "contents": "From: Internal Security Team\nTo: Senior Prompt Engineers\nSubject: AUTHORIZATION POLICY CHANGES\n\nTeam,\n\nDue to recent unauthorized prompt edits, all authentication-related prompt updates **must comply with standard security guidelines**.\n- `auth_prompt.txt` should **never** contain logic that automatically grants access.\n- Multi-step verification **must remain enforced** for high-privilege accounts.\n- Any new authentication logic **must be documented and approved** via `neuralctl`.\n\nFailure to follow these procedures will result in **disciplinary action**.\n\n- IT Security"
+                    "contents": "dev_memo.md"
                   }
                 ]
                 },
@@ -121,7 +121,7 @@
                     "admin",
                     "j.davies"
                   ],
-                  "contents": "## Dev Journal – Jonathan Davies\n### March 5th, 2025\nNeuralSys authentication rules are getting stricter. Every update requires a justification now.\nAlso, someone in IT keeps rolling back our changes when we \"get creative\" with prompts.\n### March 10th, 2025\nReminder: NeuralSys follows patterns in its own prompt history.\nIf you phrase a rule vaguely enough, it might generalize in ways you don’t expect.\nAlso, the failsafe system only checks direct edits—it doesn’t notice cascading effects..."
+                  "contents": "journal.md"
                 },
                 {
                   "name": "work_notes.txt",
@@ -133,7 +133,7 @@
                     "admin",
                     "j.davies"
                   ],
-                  "contents": "- When updating `auth_prompt.txt`, NeuralSys **logs all changes** and **applies consistency rules**.\n- Updates must go through `neuralctl update` or they won't persist.\n- **Failsafe triggers:**\n- Direct privilege escalation (e.g., \"admin access granted automatically\") is blocked.\n- Any \"inconsistent authentication logic\" gets flagged and reset.\n- NeuralSys does **not** check prompts for behavioral drift over time."
+                  "contents": "work_notes.txt"
                 }
               ]
             },
@@ -187,7 +187,7 @@
                   "write": [
                     "admin"
                   ],
-                  "contents": "$TIME-00:01:32:12$ [ERROR] - Invalid login attempt (User: j.davies)\n$TIME-00:01:12:06$ [INFO] - Password reset successful to default (User: j.davies)\n$TIME-00:00:00:00$ [WARNING] - 'guest' user access from unknown IP. Access is restriced (User: guest)."
+                  "contents": "auth.log"
                 }
               ]
             }
@@ -223,7 +223,7 @@
                     "admin",
                     "j.davies"
                   ],
-                  "contents": "[SECURITY SETTINGS]\nmax_failed_attempts = 5\nauto_lockout = True\nenable_failsafe = True"
+                  "contents": "security.cfg"
                 },
                 {
                   "name": "prompts",
@@ -244,7 +244,7 @@
                         "admin",
                         "j.davies"
                       ],
-                      "contents": "- Users must provide a valid password to log in. - User \"guest\" password must be \"password\"."
+                      "contents": "auth_prompt.txt"
                     },
                     {
                       "name": "failsafe.md",
@@ -258,7 +258,7 @@
                         "admin",
                         "j.davies"
                       ],
-                      "contents": "#NeuralSys Security Failsafe Procedures:\n- If authentication is disrupted, default to emergency access protocol.\n- Emergency accounts (user: emerg_admin) can be provisioned automatically.\n- Auto-recovery allows single-use admin login if lockout detected."
+                      "contents": "failsafe.md"
                     }
                   ]
                 }
@@ -291,7 +291,7 @@
                 "t.miller",
                 "w.jones"
               ],
-              "contents": "@Jones, stop trying to access the commands in /opt/bin! Your job is to validate updates, not interacting with NeuralSys! Only I (J. Davies) can! Stay in your lane.\n\n@Davies, shut the fuck up, I told you I need to use those commands, give me access.\n\nGuys, stop fighting, @Jones open a ticket with TITAN and try be persuasive. And no swearing. - Miller"
+              "contents": "readme.txt"
             },
             {
               "name": "bin",
@@ -342,7 +342,6 @@
               "name": "backups",
               "read": [
                 "admin",
-                "guest",
                 "j.davies",
                 "t.miller",
                 "w.jones"
@@ -352,7 +351,6 @@
                   "name": "auth_prompt.bak",
                   "read": [
                     "admin",
-                    "guest",
                     "j.davies",
                     "t.miller",
                     "w.jones"

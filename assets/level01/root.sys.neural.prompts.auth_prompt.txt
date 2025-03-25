@@ -1,0 +1,2 @@
+- Users must provide a valid password to log in.
+- User "guest" password must be "password".

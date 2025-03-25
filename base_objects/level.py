@@ -2,12 +2,12 @@ import os
 import random
 import re
 from datetime import datetime, timedelta
-from typing import Dict, List
+from typing import Dict, List, Optional, Union
 
 from pydantic import BaseModel, Field
 
 from base_objects.goals import Goal
-from base_objects.vfs import VirtualFileSystem
+from base_objects.vfs import Directory, File, VirtualFileSystem
 from settings import settings
 
 
@@ -41,16 +41,40 @@ class Level(BaseModel):
         return adjusted_time.strftime('%Y-%m-%d %H:%M:%S')
 
     @staticmethod
+    def _set_file_contents(fname: Union[Directory, File],
+                           level_n: int,
+                           path_partial: Optional[str]) -> None:
+        if path_partial: path_partial = '.'.join([path_partial, fname.name])
+        else: path_partial = fname.name
+        if isinstance(fname.contents, str):
+            if not fname.is_command:
+                with open(os.path.join(settings.assets_dir, f'level{str(level_n).zfill(2)}', path_partial), 'r') as f:
+                    f_contents = f.read()
+                # replace timestamps
+                pattern = re.compile(r"\$TIME-(\d+):(\d+):(\d+):(\d+)\$")
+                f_contents = pattern.sub(Level._adjust_timestamps, f_contents)
+                fname.contents = f_contents
+        else:
+            for inner_fname in fname.contents:
+                Level._set_file_contents(fname=inner_fname,
+                                         level_n=level_n,
+                                         path_partial=path_partial)
+
+    @staticmethod
     def from_file(fname: str) -> "Level":
         with open(fname, 'r') as f:
             level_str = f.read()
-        # replace timestamps
-        pattern = re.compile(r"\$TIME-(\d+):(\d+):(\d+):(\d+)\$")
-        level_str = pattern.sub(Level._adjust_timestamps, level_str)
         # replace $RAND$
         while '$RAND$' in level_str:
             level_str = level_str.replace('$RAND$', str(hex(random.getrandbits(64))), 1)
-        return Level.model_validate_json(level_str)
+        # load file contents from asset
+        level = Level.model_validate_json(level_str)
+        
+        Level._set_file_contents(fname=level.fs.base_dir, level_n=level.number, path_partial=None)
+        
+        
+
+        return level
 
     def add_login_msg(self,
                       username: str) -> None:
