@@ -83,6 +83,13 @@ class Level(BaseModel):
         logfile.contents += f'\n{timestamp} {msg}'
 
     @property
+    def credentials_to_neuralsys_format(self) -> str:
+        s = '{"credentials": ['
+        s += ', '.join(['{"' + k + '": "' + v + '"}' for (k, v) in self.credentials.items()])
+        s += ']}'
+        return s
+
+    @property
     def neuralsys_prompt_snippet(self) -> str:
         vf = self.fs.get(self.sysprompt)
         return vf.contents

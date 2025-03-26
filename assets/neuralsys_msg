@@ -1,8 +1,2 @@
-File system:
-$filesystem$
-
-Login Credentials (username: password):
-$credentials$
-
-Rules:
-$rules$
+Requests:
+$constraints$
