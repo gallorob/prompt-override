@@ -74,6 +74,7 @@ class GameScreen(Screen):
 		self.chat.stream_chat(message=goal_msg)
 
 	def action_quit(self) -> None:
+		# TODO: Should show a modal instead that asks if you really want to quit the game
 		self.app.pop_screen()
 
 	def action_login(self) -> None:
@@ -110,7 +111,12 @@ class GameScreen(Screen):
 			promptedit_msg = promptedit_msg.replace('$CURRENT_USER$', self.level.fs.current_user)
 			if log_str.startswith(self.neuralsys.check_fail_prefix):
 				self.level.rollback_changes()
-				# TODO: Raise security alert (up to max value, then game over.)
+				self.level.max_retries -= 1
+				if self.level.max_retries == 0:
+					# TODO: Notify user that the game is over, then quit
+					# Would be nicer to disable FS and have KARMA send a message for game over
+					self.action_quit()
+				
 			
 			self.chat.stream_chat(message=promptedit_msg)
 

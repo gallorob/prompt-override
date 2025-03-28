@@ -25,6 +25,9 @@ class Level(BaseModel):
 
     sysprompt: str = Field('')
 
+    security_cfg: str = Field('')
+    max_retries: int = Field(0)
+
     # more properties to load here
     # eg: hints, story snippets etc...
 
@@ -33,6 +36,11 @@ class Level(BaseModel):
         bak_fname = self.sysprompt.split('.')[0] + '.bak'
         bak_file = self.fs.get(bak_fname)
         bak_file.contents = self.neuralsys_prompt_snippet
+        # set max retries
+        security_file = self.fs.get(self.security_cfg)
+        match = re.search(r"max_failed_attempts\s*=\s*(\d+)", security_file.contents)
+        if match:
+            self.max_retries = int(match.group(1))
 
     @staticmethod
     def _adjust_timestamps(match: re.Match) -> str:
