@@ -1,8 +1,8 @@
 from typing import Dict
 from textual.app import ComposeResult
 from textual.binding import Binding
-from textual.containers import Container, Vertical, Horizontal, Center
-from textual.screen import ModalScreen, Screen
+from textual.containers import Container, Vertical, Center
+from textual.screen import ModalScreen
 from textual.widgets import Footer, Header, Static, Input, Button
 
 from base_objects.vfs import VirtualFileSystem

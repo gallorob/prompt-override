@@ -7,6 +7,11 @@ Screen {
     align: center top;
 }
 
+.quit_buttons {
+    content-align: center middle;
+    width: 50%;
+}
+
 .explorer-container {
     height: 70%;
 }
@@ -43,4 +48,26 @@ Screen {
     height: 15;
     border: thick $background 80%;
     background: $surface;
+    align: center middle;
+}
+
+#quit_dialog {
+    width: 40;
+    height: 10;
+    border: thick $background 80%;
+    background: $surface;
+}
+
+QuitScreen {
+    align: center middle;
+}
+
+LoginScreen {
+    align: center middle;
+}
+
+#question {
+    height: 1fr;
+    width: 1fr;
+    content-align: center middle;
 }

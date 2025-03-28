@@ -16,6 +16,7 @@ from ui_elements.chat import ChatWidget
 from ui_elements.explorer import ExplorerWidget
 from ui_elements.goals import GoalsDisplay
 from ui_elements.login import LoginScreen
+from ui_elements.quit import QuitScreen
 
 
 class GameScreen(Screen):
@@ -74,8 +75,7 @@ class GameScreen(Screen):
 		self.chat.stream_chat(message=goal_msg)
 
 	def action_quit(self) -> None:
-		# TODO: Should show a modal instead that asks if you really want to quit the game
-		self.app.pop_screen()
+		self.app.push_screen(QuitScreen())
 
 	def action_login(self) -> None:
 		def check_login_successful(v: bool | None) -> None:
