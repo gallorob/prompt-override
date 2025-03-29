@@ -3,7 +3,7 @@ from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Container, Vertical, Center
 from textual.screen import ModalScreen
-from textual.widgets import Footer, Header, Static, Input, Button
+from textual.widgets import Footer, Static, Input, Button
 
 from base_objects.vfs import VirtualFileSystem
 
@@ -14,17 +14,14 @@ class LoginScreen(ModalScreen):
 		self.credentials = credentials
 		self.vfs = vfs
 		
-		self.title = 'Login'
-		
-	
 	BINDINGS = [
 		Binding('escape', 'close_window', 'Cancel', priority=True),
 		Binding('enter', 'try_login', 'Login', priority=True)
 	]
 
 	def compose(self) -> ComposeResult:
-		yield Header(show_clock=True, icon='')
 		yield Center(
+			Static(content='Login', classes="horizontal-centered"),
 			Container(
 				Vertical(
 					Static("Username:"), Input(value=self.vfs.current_user, id="input_username"),

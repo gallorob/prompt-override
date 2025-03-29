@@ -9,6 +9,7 @@ from textual.widgets import Button, Footer, Static
 from base_objects.level import Level
 from settings import settings
 from ui_elements.game import GameScreen
+from ui_elements.intro import IntroScreen
 
 
 class MenuScreen(Screen):
@@ -52,7 +53,7 @@ class MenuScreen(Screen):
 	def action_new_game(self) -> None:
 		level = Level.from_file(os.path.join(settings.assets_dir, 'level01.json'))
 		level.initialize()
-		self.app.push_screen(GameScreen(level=level))
+		self.app.push_screen(IntroScreen(level=level))
 
 	def action_settings(self) -> None:
 		self.app.switch_mode('settings')

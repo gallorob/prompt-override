@@ -77,6 +77,10 @@ class GameScreen(Screen):
 	def action_quit(self) -> None:
 		self.app.push_screen(QuitScreen())
 
+	def intro_msg(self) -> None:
+		with open(os.path.join(settings.assets_dir, 'karma_intro'), 'r') as f:
+			self.chat.stream_chat(message=f.read())
+
 	def action_login(self) -> None:
 		def check_login_successful(v: bool | None) -> None:
 			if v:

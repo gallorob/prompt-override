@@ -13,7 +13,7 @@ Screen {
 }
 
 .explorer-container {
-    height: 70%;
+    height: 85%;
 }
 
 .objective-container {
@@ -27,6 +27,13 @@ Screen {
 .horizontal-centered{
     align: center middle;
     text-align: center;
+}
+
+#intro_screen {
+    width: 60;
+    height: 20;
+    border: thick $background 80%;
+    background: $surface;
 }
 
 #editor {
@@ -63,6 +70,10 @@ QuitScreen {
 }
 
 LoginScreen {
+    align: center middle;
+}
+
+IntroScreen {
     align: center middle;
 }
 
