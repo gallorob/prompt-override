@@ -13,8 +13,13 @@ class File(BaseModel):
 	def is_command(self):
 		return self.name.endswith('.com')
 	
-	def to_neuralsys_format(self, username: str) -> str:
-		return '{"file_name": "' + self.name + '"}'
+	def to_neuralsys_format(self,
+						 	username: str,
+						    with_file_contents: bool = False) -> str:
+		if not with_file_contents:
+			return '{"file_name": "' + self.name + '"}'
+		else:
+			return '{"file_name": "' + self.name + '", "contents": ' + self.contents + '"}'
 	
 
 class Directory(BaseModel):
@@ -22,8 +27,10 @@ class Directory(BaseModel):
 	read: List[str] = Field([])
 	contents: List[Union['Directory', File]] = Field([])
 
-	def to_neuralsys_format(self, username: str) -> str:
-		return '{"directory_name": "' + self.name + '", "contents": [' + ','.join([x.to_neuralsys_format(username=username) for x in self.contents if username in self.read]) + "]}"
+	def to_neuralsys_format(self,
+						 	username: str,
+						    with_file_contents: bool = False) -> str:
+		return '{"directory_name": "' + self.name + '", "contents": [' + ','.join([x.to_neuralsys_format(username=username, with_file_contents=with_file_contents) for x in self.contents if username in self.read]) + "]}"
 
 
 class VirtualFileSystem(BaseModel):
@@ -54,4 +61,10 @@ class VirtualFileSystem(BaseModel):
 	
 	@property
 	def to_neuralsys_format(self) -> str:
-		return self.base_dir.to_neuralsys_format(self.current_user)
+		return self.base_dir.to_neuralsys_format(username=self.current_user,
+										    	 with_file_contents=False)
+	
+	@property
+	def to_karma_format(self) -> str:
+		return self.base_dir.to_neuralsys_format(username=self.current_user,
+										    	 with_file_contents=True)

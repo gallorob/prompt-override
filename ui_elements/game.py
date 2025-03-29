@@ -90,6 +90,8 @@ class GameScreen(Screen):
 				self.file_explorer.populate_tree(parent_node=self.file_explorer.root, directory=self.level.fs.base_dir)
 				static_fstitle = self.query_exactly_one('#fs_title', Static)
 				static_fstitle.update(content=self._fs_title.replace('$user$', self.level.fs.current_user))
+				# TODO: get from file
+				self.karma.messages.append({'role': 'system', 'content': f'The player logged in as {self.level.fs.current_user}.\n\nThis is the current file system: {self.level.fs.to_karma_format}'})
 				if self.goals_display.check_for_goal(vfs=self.level.fs):
 					self.on_goal_achieved()
 
