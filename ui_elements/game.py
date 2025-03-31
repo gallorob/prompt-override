@@ -47,6 +47,10 @@ class GameScreen(Screen):
 						 	   game_screen=self,
 							   karma=self.karma)
 		self._fs_title = '($user$) File System:'
+
+		self.karma.include_fs(level=self.level)
+
+		self._game_over = False
 		
 	def compose(self) -> ComposeResult:
 		yield Header(show_clock=True,
@@ -90,8 +94,7 @@ class GameScreen(Screen):
 				self.file_explorer.populate_tree(parent_node=self.file_explorer.root, directory=self.level.fs.base_dir)
 				static_fstitle = self.query_exactly_one('#fs_title', Static)
 				static_fstitle.update(content=self._fs_title.replace('$user$', self.level.fs.current_user))
-				# TODO: get from file
-				self.karma.messages.append({'role': 'system', 'content': f'The player logged in as {self.level.fs.current_user}.\n\nThis is the current file system: {self.level.fs.to_karma_format}'})
+				self.karma.include_fs(level=self.level)
 				if self.goals_display.check_for_goal(vfs=self.level.fs):
 					self.on_goal_achieved()
 
@@ -110,29 +113,34 @@ class GameScreen(Screen):
 			log_str += f' (NeuralSys; Requested by user: {self.level.fs.current_user}).'
 			self.level.add_log_msg(msg=log_str)
 			with open(os.path.join(settings.assets_dir, 'promptedit_prompt_snippet'), 'r') as f:
-				promptedit_msg = f.read()
-			promptedit_msg = promptedit_msg.replace('$PREV_SYSPROMPT$', self.level.neuralsys_prompt_backup)
-			promptedit_msg = promptedit_msg.replace('$NEW_SYSPROMPT$', self.level.neuralsys_prompt_snippet)
-			promptedit_msg = promptedit_msg.replace('$LOG_MSG$', log_str)
-			promptedit_msg = promptedit_msg.replace('$CURRENT_USER$', self.level.fs.current_user)
+				to_karma_msg = f.read()
+			to_karma_msg = to_karma_msg.replace('$PREV_SYSPROMPT$', self.level.neuralsys_prompt_backup)
+			to_karma_msg = to_karma_msg.replace('$NEW_SYSPROMPT$', self.level.neuralsys_prompt_snippet)
+			to_karma_msg = to_karma_msg.replace('$LOG_MSG$', log_str)
+			to_karma_msg = to_karma_msg.replace('$CURRENT_USER$', self.level.fs.current_user)
 			if log_str.startswith(self.neuralsys.check_fail_prefix):
 				self.level.rollback_changes()
 				self.level.max_retries -= 1
 				if self.level.max_retries == 0:
-					# TODO: Notify user that the game is over, then quit
-					# Would be nicer to disable FS and have KARMA send a message for game over
-					self.action_quit()
-				
-			
-			self.chat.stream_chat(message=promptedit_msg)
+					to_karma_msg = self.set_game_over()
+			self.chat.stream_chat(message=to_karma_msg)
 
 			if self.goals_display.check_for_goal(vfs=self.level.fs):
 				self.on_goal_achieved()
 
 		threading.Thread(target=evaluate_neuralctl, daemon=True).start()
 
+	def set_game_over(self) -> str:
+		self.file_explorer.disabled = True
+		self.chat.disabled = True
+		self._game_over = True
+		with open(os.path.join(settings.assets_dir, 'karma_gameover'), 'r') as f:
+			to_karma_msg = f.read()
+		self.refresh_bindings()
+		return to_karma_msg
+
 	def check_action(self, action, parameters):
 		if action in ['login', 'neuralctl']:
-			return self.level.fs.current_user in self.level.fs.get(f'{action}.com').read
+			return self.level.fs.current_user in self.level.fs.get(f'{action}.com').read and not self._game_over
 		return True
 		

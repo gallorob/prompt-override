@@ -4,6 +4,7 @@ from typing import Generator, List
 import ollama
 from textual.screen import Screen
 
+from base_objects.level import Level
 from settings import settings
 
 
@@ -27,6 +28,14 @@ class Karma:
                     role: str) -> None:
         self.messages.append({'role': role, 'content': msg})
     
+    def include_fs(self,
+                   level: Level) -> None:
+        with open(os.path.join(settings.assets_dir, 'karma_fs_prompt'), 'r') as f:
+            msg = f.read()
+        msg = msg.replace('$current_user$', level.fs.current_user)
+        msg = msg.replace('$filesystem$', level.fs.to_karma_format)
+        self.messages.append({'role': 'system', 'content': msg})
+
     def chat(self,
              **kwargs) -> Generator[str, None, None]:
         options = {
