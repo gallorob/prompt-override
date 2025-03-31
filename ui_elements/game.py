@@ -3,9 +3,9 @@ import threading
 
 from textual.app import ComposeResult
 from textual.binding import Binding
-from textual.containers import Horizontal, ScrollableContainer, Vertical
+from textual.containers import Horizontal, ScrollableContainer, Vertical, Center
 from textual.screen import Screen
-from textual.widgets import Footer, Header, Static
+from textual.widgets import Footer, Header, Static, Button
 
 from base_objects.level import Level
 from events import FileSystemUpdated
@@ -60,11 +60,16 @@ class GameScreen(Screen):
 				with Vertical(classes="explorer-container"):
 					yield Static(content=self._fs_title.replace('$user$', self.level.fs.current_user), classes="horizontal-centered", id="fs_title")
 					yield ScrollableContainer(self.file_explorer)
-				with Vertical(classes="objective-container"):
-					yield self.goals_display
+				with Center(classes='objectives-container'):
+					yield Button(label='Mission Objectives', variant='default', id='objectives_button')
 			with Vertical(classes="chat-container"):
 				yield self.chat
 		yield Footer()
+
+	def on_button_pressed(self, event: Button.Pressed) -> None:
+		button_id = event.button.id
+		if button_id == "objectives_button":
+			self.app.push_screen(self.goals_display)
 
 	def on_file_system_updated(self, event: FileSystemUpdated):
 		if self.goals_display.check_for_goal(vfs=self.level.fs):

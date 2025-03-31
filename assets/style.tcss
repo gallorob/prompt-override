@@ -16,8 +16,8 @@ Screen {
     height: 85%;
 }
 
-.objective-container {
-    height: 30%;
+.objectives-container {
+    height: 15%;
 }
 
 .chat-container {
@@ -53,6 +53,14 @@ Screen {
 #login {
     width: 40;
     height: 15;
+    border: thick $background 80%;
+    background: $surface;
+    align: center middle;
+}
+
+#objectives {
+    width: 50;
+    height: 30;
     border: thick $background 80%;
     background: $surface;
     align: center middle;

@@ -25,9 +25,9 @@ class MenuScreen(Screen):
 			Static(self.load_title(), id="title"),
 			Container(
 				Vertical(
-					Button("New Game", id="new_game"),
-					Button("Options", id="settings"),
-					Button("Exit", id="exit"),
+					Button("New Game", variant='default', id="new_game"),
+					Button("Options", variant='primary', id="settings"),
+					Button("Exit", variant='error', id="exit"),
 					id="menu_buttons"
 				)
 			))
