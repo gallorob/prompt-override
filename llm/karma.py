@@ -41,7 +41,8 @@ class Karma:
         options = {
             'temperature': settings.karma.temperature,
             'top_p': settings.karma.top_p,
-            'seed': settings.rng_seed
+            'seed': settings.rng_seed,
+            'num_ctx': settings.neuralsys.num_ctx,
         }
         response = ollama.chat(model=settings.karma.model_name,
                                messages=self.messages,

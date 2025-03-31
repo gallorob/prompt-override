@@ -212,6 +212,39 @@
           ],
           "contents": [
             {
+              "name": "docs",
+              "read": [
+                "admin",
+                "guest",
+                "j.davies",
+                "t.miller",
+                "w.jones"
+              ],
+              "contents": [
+                {
+                  "name": "login.help",
+                  "read": [
+                    "admin",
+                    "guest",
+                    "j.davies",
+                    "t.miller",
+                    "w.jones"
+                  ],
+                  "write": [],
+                  "contents": "login.help"
+                },
+                {"name": "neuralctl.help",
+                  "read": [
+                    "admin",
+                    "j.davies",
+                    "t.miller",
+                    "w.jones"
+                  ],
+                  "write": [],
+                  "contents": "neuralctl.help"}
+              ]
+            },
+            {
               "name": "log",
               "read": [
                 "admin",
