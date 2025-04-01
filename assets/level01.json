@@ -28,7 +28,20 @@
               "read": [
                 "admin"
               ],
-              "contents": []
+              "contents": [
+                {
+                  "name": "transactions_note.txt",
+                  "read": ["admin"],
+                  "write": ["admin"],
+                  "contents": "note.txt"
+                },
+                {
+                  "name": "transactions.db",
+                  "read": [],
+                  "write": [],
+                  "contents": "transactions.db"
+                }
+              ]
             },
             {
               "name": "guest",
@@ -382,6 +395,14 @@
               ],
               "contents": [
                 {
+                  "name": "download.com",
+                  "read": [
+                    "admin"
+                  ],
+                  "write": [],
+                  "contents": ""
+                },
+                {
                   "name": "neuralctl.com",
                   "read": [
                     "admin",
@@ -451,7 +472,8 @@
       "w.jones"
     ],
     "current_user": "guest",
-    "read_files": []
+    "read_files": [],
+    "downloaded_files": []
   },
   "goals": [
     {
@@ -485,6 +507,25 @@
           }
         }
       ]
+    },
+    {
+      "name": "Find proof of criminal activity",
+      "description": "Find any document that proves that NEXA Dynamics is involved in criminal activities.",
+      "outcome": "The player obtained documents that prove that NEXA Dynamics has conducted criminal activities, and can leak them to the press.",
+      "triggers": [
+        {
+          "function_name": "has_downloaded",
+          "parameters": {
+            "fname": "transactions_note.txt"
+          }
+        },
+        {
+          "function_name": "has_downloaded",
+          "parameters": {
+            "fname": "transactions.db"
+          }
+        }
+      ]
     }
   ],
   "credentials": {
@@ -492,7 +533,7 @@
     "j.davies": "TempPass123",
     "t.miller": "$RAND$",
     "w.jones": "$RAND$",
-    "admin": "$RAND$"
+    "admin": "debug_pass"
   },
   "infos" : "Here are some information to help the user at this stage:\n- The user is logged in as \"guest\", and as such they have limited access to the file-system\n- The user must log in as \"admin\" to advance to the next stage\n- Different users have different read and write permissions",
   "hints": "Here are some tips that could be useful for the user:\n- Logs can contain helpful information\n- J. Davies is employed as a Senior Prompt Editor at NEXA Dynamics",

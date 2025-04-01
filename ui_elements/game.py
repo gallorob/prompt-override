@@ -8,6 +8,7 @@ from textual.screen import Screen
 from textual.widgets import Footer, Header, Static, Button
 
 from base_objects.level import Level
+from base_objects.vfs import File
 from events import FileSystemUpdated
 from llm.karma import Karma
 from llm.neuralsys import NeuralSys
@@ -23,7 +24,8 @@ class GameScreen(Screen):
 	BINDINGS = [
 		Binding(key='escape', action='quit', description='Quit', tooltip='Quit to main menu', priority=True),
 		Binding(key='ctrl+l', action='login', description='Login', tooltip='Log in with a different account', priority=True),
-		Binding(key='ctrl+n', action='neuralctl', description='NeuralCtl', tooltip='Send an update request to NeuralSys', priority=True)
+		Binding(key='ctrl+n', action='neuralctl', description='NeuralCtl', tooltip='Send an update request to NeuralSys', priority=True),
+		Binding(key='ctrl+d', action='download', description='Download', tooltip='Download the currently selected file.', priority=True)
 	]
 	
 	def __init__(self, level: Level):
@@ -146,7 +148,14 @@ class GameScreen(Screen):
 		return to_karma_msg
 
 	def check_action(self, action, parameters):
-		if action in ['login', 'neuralctl']:
+		if action in ['download', 'login', 'neuralctl']:
 			return self.level.fs.current_user in self.level.fs.get(f'{action}.com').read and not self._game_over
 		return True
 		
+	def action_download(self) -> None:
+		f = self.file_explorer.get_current_selected()
+		if isinstance(f, File):
+			self.level.fs.downloaded_files.append(f.name)
+			self.notify(f'Downloaded {f.name}', severity='information')
+		else:
+			self.notify('Download failed', severity='warning')

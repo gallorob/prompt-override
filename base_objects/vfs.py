@@ -39,6 +39,7 @@ class VirtualFileSystem(BaseModel):
 
 	current_user: str = Field('')
 	read_files: List[str] = Field([])
+	downloaded_files: List[str] = Field([])
 
 	def get(self, fname: str, directory: Optional[Directory] = None) -> Union[Directory, File]:
 		if directory is None:
@@ -58,6 +59,9 @@ class VirtualFileSystem(BaseModel):
 
 	def is_logged_as(self, username: str) -> bool:
 		return self.current_user == username
+	
+	def has_downloaded(self, fname: str) -> bool:
+		return fname in self.downloaded_files
 	
 	@property
 	def to_neuralsys_format(self) -> str:

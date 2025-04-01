@@ -1,3 +1,4 @@
+from typing import Union
 from textual.screen import Screen
 from textual.widgets import DirectoryTree, Tree
 
@@ -45,16 +46,20 @@ class ExplorerWidget(DirectoryTree):
 			parent_dir = self.vfs.get(path_dir, directory=parent_dir)
 		return parent_dir
 
-	def on_tree_node_selected(self, event) -> None:
-		label = event.node.label.plain
+	def _fs_obj_from_node(self,
+					      node: Tree) -> Union[Directory, File]:
+		label = node.label.plain
 		fname = label.replace(self._locked, '').replace(self._writable, '').strip()
-		parent_dir = self._get_parent_directory(node=event.node)
-		doc = self.vfs.get(fname, directory=parent_dir)
+		parent_dir = self._get_parent_directory(node=node)
+		return self.vfs.get(fname, directory=parent_dir)
+
+	def on_tree_node_selected(self, event) -> None:
+		doc = self._fs_obj_from_node(node=event.node)
 		if isinstance(doc, File):
 			if self.vfs.current_user in doc.write:
 				self.vfs.read_files.append(doc.name)
 				self.game_screen.post_message(FileSystemUpdated(self))
-				self.app.push_screen(EditorScreen(doc, bak=self.vfs.get(fname.split('.')[0] + '.bak')))
+				self.app.push_screen(EditorScreen(doc, bak=self.vfs.get(doc.name.split('.')[0] + '.bak')))
 			elif self.vfs.current_user in doc.read:
 				if not doc.is_command:
 					self.vfs.read_files.append(doc.name)
@@ -64,4 +69,10 @@ class ExplorerWidget(DirectoryTree):
 					self.notify(f'{doc.name} is a command', severity='information')
 			else:
 				self.notify(f'{doc.name} cannot be opened', severity='information')
+	
+	def get_current_selected(self) -> Union[File, Directory]:
+		node = self.get_node_at_line(self.cursor_line)
+		if node:
+			return self._fs_obj_from_node(node=node)
+		return None
 	
