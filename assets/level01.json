@@ -235,6 +235,18 @@
               ],
               "contents": [
                 {
+                  "name": "download.help",
+                  "read": [
+                    "admin",
+                    "guest",
+                    "j.davies",
+                    "t.miller",
+                    "w.jones"
+                  ],
+                  "write": [],
+                  "contents": "download.help"
+                },
+                {
                   "name": "login.help",
                   "read": [
                     "admin",
