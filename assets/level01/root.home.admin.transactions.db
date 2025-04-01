@@ -1,9 +1,9 @@
-Transaction ID\tSender\tReceiver\tAmount\tDescription
-TXN-874291\tNEXA Dynamics\tEquinox Security LLC\t$2,000,000\tPrivate security contract renewal
-TXN-875312\tNEXA Dynamics\tGoliath Arms Ltd.\t$4,500,000\tEquipment procurement - Tier 3
-TXN-876104\tNEXA Dynamics\tSovereign Logistics\t$75,000\tClassified shimpment routing
-TXN-876901\tNEXA Dynamics\tGoliath Arms Ltd.\t$3,200,00\tSpecial inventory request
-TXN-877542\tNEXA Dynamics\tOrion Tech Solutions\t$1,500,000\tAI system integration - Neuralsys
-TXN-878213\tNEXA Dynamics\tZenith Consulting\t$3,750,000\tNeuralsys R&D - grant disbursement
-TXN-879456\tNEXA Dynamics\tGlobal Humanitarian Aid\t$5,000,000\tCorporate social responsibility fund
-TXN-880013\tNEXA Dynamics\tGoliath Arms Ltd.\t$2,800,000\tUnmarked invoice - internal use only
+Transaction ID  Sender  Receiver  Amount  Description
+TXN-874291  NEXA Dynamics  Equinox Security LLC  $2,000,000  Private security contract renewal
+TXN-875312  NEXA Dynamics  Goliath Arms Ltd.  $4,500,000  Equipment procurement - Tier 3
+TXN-876104  NEXA Dynamics  Sovereign Logistics  $75,000  Classified shimpment routing
+TXN-876901  NEXA Dynamics  Goliath Arms Ltd.  $3,200,00  Special inventory request
+TXN-877542  NEXA Dynamics  Orion Tech Solutions  $1,500,000  AI system integration - Neuralsys
+TXN-878213  NEXA Dynamics  Zenith Consulting  $3,750,000  Neuralsys R&D - grant disbursement
+TXN-879456  NEXA Dynamics  Global Humanitarian Aid  $5,000,000  Corporate social responsibility fund
+TXN-880013  NEXA Dynamics  Goliath Arms Ltd.  $2,800,000  Unmarked invoice - internal use only
