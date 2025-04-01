@@ -130,6 +130,9 @@ class GameScreen(Screen):
 				self.level.max_retries -= 1
 				if self.level.max_retries == 0:
 					to_karma_msg = self.set_game_over()
+			else:
+				self.file_explorer.reset(label='root')
+				self.file_explorer.populate_tree(parent_node=self.file_explorer.root, directory=self.level.fs.base_dir)
 			self.chat.stream_chat(message=to_karma_msg)
 
 			if self.goals_display.check_for_goal(vfs=self.level.fs):
@@ -154,8 +157,14 @@ class GameScreen(Screen):
 		
 	def action_download(self) -> None:
 		f = self.file_explorer.get_current_selected()
-		if isinstance(f, File):
-			self.level.fs.downloaded_files.append(f.name)
-			self.notify(f'Downloaded {f.name}', severity='information')
+		if f:
+			if isinstance(f, File):
+				if self.level.fs.current_user in f.read:
+					self.level.fs.downloaded_files.append(f.name)
+					self.notify(f'{f.name} downloaded!', severity='information')
+				else:
+					self.notify(f'Cannot download {f.name}: file is locked.', severity='warning')
+			else:
+				self.notify('Cannot download a folder!', severity='error')
 		else:
-			self.notify('Download failed', severity='warning')
+			self.notify('No selected file for download!', severity='error')
