@@ -138,6 +138,7 @@ class GameScreen(Screen):
 	def set_game_over(self) -> str:
 		self.file_explorer.disabled = True
 		self.chat.disabled = True
+		self.query_exactly_one(selector='#objectives_button', expect_type=Button).disabled = True
 		self._game_over = True
 		with open(os.path.join(settings.assets_dir, 'karma_gameover'), 'r') as f:
 			to_karma_msg = f.read()
