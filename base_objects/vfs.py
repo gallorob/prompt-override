@@ -13,13 +13,17 @@ class File(BaseModel):
 	def is_command(self):
 		return self.name.endswith('.com')
 	
+	@staticmethod
+	def _as_json(ls: List[str]) -> str:
+		return "[" + ", ".join([f'"{s}"' for s in ls]) + "]"
+	
 	def to_neuralsys_format(self,
 						 	username: str,
 						    with_file_contents: bool = False) -> str:
 		if not with_file_contents:
-			return '{"file_name": "' + self.name + '"}'
+			return '{"file_name": "' + self.name + '", "read": ' + File._as_json(self.read) + ', "write": ' + File._as_json(self.write) + '}'
 		else:
-			return '{"file_name": "' + self.name + '", "contents": ' + self.contents + '"}'
+			return '{"file_name": "' + self.name + '", "read": ' + File._as_json(self.read) + ', "write": ' + File._as_json(self.write) + ', "contents": ' + self.contents + '"}'
 	
 
 class Directory(BaseModel):
