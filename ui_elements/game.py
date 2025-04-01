@@ -85,6 +85,9 @@ class GameScreen(Screen):
 		goal_msg = goal_msg.replace('$goal_outcome$', goal_achieved.outcome)
 		self.chat.stream_chat(message=goal_msg)
 
+		if self.goals_display.all_achieved:
+			self.mission_over()
+
 	def action_quit(self) -> None:
 		self.app.push_screen(QuitScreen())
 
@@ -150,6 +153,16 @@ class GameScreen(Screen):
 		self.refresh_bindings()
 		return to_karma_msg
 
+	def mission_over(self) -> None:
+		self.file_explorer.disabled = True
+		self.chat.disabled = True
+		self.query_exactly_one(selector='#objectives_button', expect_type=Button).disabled = True
+		self._game_over = True
+		with open(os.path.join(settings.assets_dir, f'level{str(self.level.number).zfill(2)}', 'level_complete'), 'r') as f:
+			mission_over_msg = f.read()
+		self.refresh_bindings()
+		self.chat.stream_chat(message=mission_over_msg)
+
 	def check_action(self, action, parameters):
 		if action in ['download', 'login', 'neuralctl']:
 			return self.level.fs.current_user in self.level.fs.get(f'{action}.com').read and not self._game_over
@@ -162,6 +175,9 @@ class GameScreen(Screen):
 				if self.level.fs.current_user in f.read:
 					self.level.fs.downloaded_files.append(f.name)
 					self.notify(f'{f.name} downloaded!', severity='information')
+
+					if self.goals_display.check_for_goal(vfs=self.level.fs):
+						self.on_goal_achieved()
 				else:
 					self.notify(f'Cannot download {f.name}: file is locked.', severity='warning')
 			else:

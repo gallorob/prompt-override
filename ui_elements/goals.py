@@ -33,7 +33,7 @@ class GoalsDisplay(ModalScreen):
             self._goals_checkbox.append(cbox)
         
         self.timer: Optional[Timer] = None
-        
+    
     def compose(self) -> ComposeResult:
         yield Center(
             Static(content='Level Objectives', classes="horizontal-centered"),
@@ -64,6 +64,10 @@ class GoalsDisplay(ModalScreen):
     @property
     def next_goal(self) -> Goal:
         return self._goals[self._goal_idx]
+    
+    @property
+    def all_achieved(self) -> bool:
+        return self._goal_idx == len(self._goals)
     
     def check_for_goal(self, vfs: VirtualFileSystem) -> bool:
         curr_goal = self.next_goal
