@@ -104,6 +104,7 @@ class GameScreen(Screen):
 				self.file_explorer.populate_tree(parent_node=self.file_explorer.root, directory=self.level.fs.base_dir)
 				static_fstitle = self.query_exactly_one('#fs_title', Static)
 				static_fstitle.update(content=self._fs_title.replace('$user$', self.level.fs.current_user))
+				# TODO: This probably eats up too much context. Should edit past system messages with fs description so KARMA only looks at one at the time.
 				self.karma.include_fs(level=self.level)
 				if self.goals_display.check_for_goal(vfs=self.level.fs):
 					self.on_goal_achieved()
@@ -156,11 +157,14 @@ class GameScreen(Screen):
 	def mission_over(self) -> None:
 		self.file_explorer.disabled = True
 		self.chat.disabled = True
+		self.goals_display.timer.stop()
 		self.query_exactly_one(selector='#objectives_button', expect_type=Button).disabled = True
 		self._game_over = True
 		with open(os.path.join(settings.assets_dir, f'level{str(self.level.number).zfill(2)}', 'level_complete'), 'r') as f:
 			mission_over_msg = f.read()
 		self.refresh_bindings()
+		# TODO: This jumbles up the last message, probably because it gets called almost straight away while it's generating the previous message
+		#  Consider awaiting?
 		self.chat.stream_chat(message=mission_over_msg)
 
 	def check_action(self, action, parameters):

@@ -8,7 +8,7 @@ class LLMSetting(BaseSettings):
     temperature: float = Field(default=0.6, ge=0.0, lt=1.0, description='The LLM temperature')
     top_p: float = Field(default=0.2, ge=0.0, lt=1.0, description='The LLM top probability')
     top_k: int = Field(default=10, ge=0, description='The LLM top-k')
-    num_ctx: int = Field(default=32678, gt=1, description='The LLM num_ctx.')
+    num_ctx: int = Field(default=32678 * 4, gt=1, description='The LLM num_ctx.')
 
 class ChatSettings(BaseSettings):
     player_prefix: str = Field(default='[bold]$USER$[/bold]> ', description='The player prefix on the chat')
