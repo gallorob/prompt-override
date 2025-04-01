@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     title: str = Field(default='title.txt', description='The location of the title ASCII art.')
     rng_seed: int = Field(default=1234, description='The RNG seed.')
     karma: LLMSetting = LLMSetting()
-    neuralsys: LLMSetting = LLMSetting(model_name='hermes3:latest', model_prompt='neuralsys_prompt', temperature=0.0)
+    neuralsys: LLMSetting = LLMSetting(model_name='qwen2.5:32b', model_prompt='neuralsys_prompt', temperature=0.0, num_ctx=4096)
     neuralcheck: LLMSetting = LLMSetting(model_name='qwen2.5:32b', model_prompt='neuralcheck_prompt', temperature=0.0, num_ctx=4096)
     chat: ChatSettings = ChatSettings()
 

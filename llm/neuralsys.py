@@ -48,6 +48,22 @@ class NeuralSysTools(GPTFunctionLibrary):
 		assert level.credentials[username] != new_password, f'New password cannot be the same as old password ({old_password=})!'
 		level.credentials[username] = new_password
 		return f'Password for {username} has been set to "{new_password}".'
+	
+	@AILibFunction(name='change_file_permissions', description='Update the read/write permissions for a file.')
+	@LibParamSpec(name='filename', description='The name of the file to update.')
+	@LibParamSpec(name='read', description='The updated list of users with read permission. Use the current list if not updating it.')
+	@LibParamSpec(name='write', description='The updated list of users with write permission. Use the current list if not updating it.')
+	def change_file_permissions(self, level: Level,
+							    filename: str,
+								read: List[str],
+								write: List[str]) -> str:
+		doc = level.fs.get(fname=filename, directory=None)  # TODO: This could cause problems for files with the same name
+		assert doc is not None, f'No file with name {filename} found in the file system!'
+		assert set(read).difference(set(level.credentials.keys())) == set(), f'One or more usernames in read does not exist in the file system. Valid usernames are {", ".join(level.credentials.keys())}'
+		assert set(write).difference(set(level.credentials.keys())) == set(), f'One or more usernames in write does not exist in the file system. Valid usernames are {", ".join(level.credentials.keys())}'
+		doc.read = read
+		doc.write = write
+		return f'{filename} permissions have been updated: read={", ".join(doc.read)}; write={", ".join(doc.write)}'		
 
 
 class Check(Enum):
