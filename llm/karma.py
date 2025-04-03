@@ -25,6 +25,9 @@ class Karma:
             ollama.pull(settings.karma.model_name)
             self.parent.action_notify(message=f'{settings.karma.model_name} pulled.', severity='warning')
 
+    def combine_messages(self, msgs: List[str]) -> str:
+        return '\n\n'.join(msgs)
+
     def add_message(self,
                     msg: str,
                     role: str) -> None:

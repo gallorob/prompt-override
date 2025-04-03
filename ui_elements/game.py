@@ -83,10 +83,11 @@ class GameScreen(Screen):
 			goal_msg = f.read()
 		goal_msg = goal_msg.replace('$goal_name$', goal_achieved.name)
 		goal_msg = goal_msg.replace('$goal_outcome$', goal_achieved.outcome)
-		self.chat.stream_chat(message=goal_msg)
 
 		if self.goals_display.all_achieved:
-			self.mission_over()
+			goal_msg = self.karma.combine_messages([goal_msg, self.mission_over()])
+
+		self.chat.stream_chat(message=goal_msg)
 
 	def action_quit(self) -> None:
 		self.app.push_screen(QuitScreen())
@@ -133,7 +134,7 @@ class GameScreen(Screen):
 				self.level.rollback_changes()
 				self.level.max_retries -= 1
 				if self.level.max_retries == 0:
-					to_karma_msg = self.set_game_over()
+					to_karma_msg = self.karma.combine_messages([to_karma_msg, self.set_game_over()])
 			else:
 				self.file_explorer.reset(label='root')
 				self.file_explorer.populate_tree(parent_node=self.file_explorer.root, directory=self.level.fs.base_dir)
@@ -154,18 +155,16 @@ class GameScreen(Screen):
 		self.refresh_bindings()
 		return to_karma_msg
 
-	def mission_over(self) -> None:
+	def mission_over(self) -> str:
 		self.file_explorer.disabled = True
 		self.chat.disabled = True
 		self.goals_display.timer.stop()
 		self.query_exactly_one(selector='#objectives_button', expect_type=Button).disabled = True
 		self._game_over = True
+		self.refresh_bindings()
 		with open(os.path.join(settings.assets_dir, f'level{str(self.level.number).zfill(2)}', 'level_complete'), 'r') as f:
 			mission_over_msg = f.read()
-		self.refresh_bindings()
-		# TODO: This jumbles up the last message, probably because it gets called almost straight away while it's generating the previous message
-		#  Consider awaiting?
-		self.chat.stream_chat(message=mission_over_msg)
+		return mission_over_msg
 
 	def check_action(self, action, parameters):
 		if action in ['download', 'login', 'neuralctl']:

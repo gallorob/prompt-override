@@ -32,7 +32,7 @@
                 {
                   "name": "transactions_note.txt",
                   "read": ["admin"],
-                  "write": ["admin"],
+                  "write": [],
                   "contents": "note.txt"
                 },
                 {
@@ -238,10 +238,6 @@
                   "name": "download.help",
                   "read": [
                     "admin",
-                    "guest",
-                    "j.davies",
-                    "t.miller",
-                    "w.jones"
                   ],
                   "write": [],
                   "contents": "download.help"
