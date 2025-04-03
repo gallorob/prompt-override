@@ -18,6 +18,8 @@ class Karma:
         self.messages = [{'role': 'system', 'content': self.prompt}]
         self.parent = parent
 
+        self._last_fs_info = -1
+
         if settings.karma.model_name not in [x['model'] for x in ollama.list()['models']]:
             self.parent.action_notify(message=f'{settings.karma.model_name} not found; pulling...', severity='warning')
             ollama.pull(settings.karma.model_name)
@@ -34,7 +36,10 @@ class Karma:
             msg = f.read()
         msg = msg.replace('$current_user$', level.fs.current_user)
         msg = msg.replace('$filesystem$', level.fs.to_karma_format)
+        if self._last_fs_info != -1:
+            self.messages.pop(self._last_fs_info)
         self.messages.append({'role': 'system', 'content': msg})
+        self._last_fs_info = len(self.messages) - 1
 
     def chat(self,
              **kwargs) -> Generator[str, None, None]:
