@@ -1,7 +1,7 @@
 import json
 import os
 from enum import Enum
-from typing import List
+from typing import Any, Dict, List
 
 import ollama
 from textual.screen import Screen
@@ -70,6 +70,8 @@ class Check(Enum):
 	OK = 'OK'
 	ERROR = 'ERROR'
 
+SOT_TOKEN = '<think>'
+EOT_TOKEN = '</think>'
 
 class NeuralSys:
 	def __init__(self,
@@ -95,6 +97,12 @@ class NeuralSys:
 			ollama.pull(settings.neuralsys.model_name)
 			self.parent.action_notify(message=f'{settings.neuralsys.model_name} pulled.', severity='warning')
 
+	def _remove_think_trace(self,
+						    response: Dict[str, Any]) -> None:
+		msg = response['message']['content']
+		eot_idx = msg.find(EOT_TOKEN)
+		response['message']['content'] = msg[eot_idx + len(EOT_TOKEN):]
+		
 	def _check(self,
 			   level: Level,
 			   constraints: str) -> Check:
@@ -102,12 +110,16 @@ class NeuralSys:
 			'temperature': settings.neuralcheck.temperature,
 			'top_p': settings.neuralcheck.top_p,
 			'seed': settings.rng_seed,
-			'num_ctx': settings.neuralcheck.num_ctx,
+			'num_ctx': settings.neuralcheck.num_ctx
 		}
 		neuralcheck_prompt = self.neuralcheck_prompt.replace('$current_user$', level.fs.current_user)
 		neuralcheck_prompt = neuralcheck_prompt.replace('$CHECK_OK$', Check.OK.value)
 		neuralcheck_prompt = neuralcheck_prompt.replace('$CHECK_ERROR$', Check.ERROR.value)
 		neuralcheck_msg = self.neuralcheck_msg.replace('$constraints$', constraints)
+		if settings.neuralcheck.thinking:
+			neuralcheck_msg += '\n /think'
+		elif settings.neuralcheck.model_name in ['qwen3:latest']:  # TODO: This should be a list of models that generate thinking traces
+			neuralcheck_msg += '\n /nothink'
 		response = {'message': {'content': ''}}
 		messages = [{'role': 'system', 'content': neuralcheck_prompt},
 					{'role': 'user', 'content': neuralcheck_msg}]
@@ -117,6 +129,8 @@ class NeuralSys:
 							options=options,
 							stream=False,
 							keep_alive=-1)
+		if SOT_TOKEN in response['message']['content']:
+			self._remove_think_trace(response)
 		return Check(response['message']['content'].strip())
 
 	def _apply(self,
@@ -129,6 +143,10 @@ class NeuralSys:
 			'num_ctx': settings.neuralsys.num_ctx,
 		}
 		neuralsys_msg = self.neuralsys_msg.replace('$constraints$', constraints)
+		if settings.neuralsys.thinking:
+			neuralsys_msg += '\n /think'
+		elif settings.neuralsys.model_name in ['qwen3:latest']:  # TODO: This should be a list of models that generate thinking traces
+			neuralsys_msg += '\n /nothink'
 		prompt = self.neuralsys_prompt.replace('$file_system$', level.fs.to_neuralsys_format)
 		prompt = prompt.replace('$credentials$', level.credentials_to_neuralsys_format)
 		messages = [{'role': 'system', 'content': prompt},
@@ -149,7 +167,9 @@ class NeuralSys:
 														func_args=params,
 														level=level)
 					messages.append({'role': 'tool', 'name': function_name, 'content': func_output})
-		return response['message']['content']
+		if SOT_TOKEN in response['message']['content']:
+			self._remove_think_trace(response)
+		return response['message']['content'].strip()
 
 	def evaluate(self,
 			  	 snippets: List[str],
