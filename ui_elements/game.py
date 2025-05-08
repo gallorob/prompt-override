@@ -33,7 +33,7 @@ class GameScreen(Screen):
 		self.level = level
 		self.title = f'Level #{self.level.number}: {self.level.name}'
 
-		snippets = [self.level.infos, self.level.hints]
+		snippets = [self.level.infos]
 		
 		self.neuralsys = NeuralSys(parent=self)
 
@@ -51,6 +51,7 @@ class GameScreen(Screen):
 		self._fs_title = '($user$) File System:'
 
 		self.karma.include_fs(level=self.level)
+		self.karma.include_goal_hints(level=self.level)
 
 		self._game_over = False
 		
@@ -79,6 +80,7 @@ class GameScreen(Screen):
 
 	def on_goal_achieved(self):
 		goal_achieved = self.goals_display._goals[self.goals_display._goal_idx - 1]
+		self.karma.include_goal_hints(level=self.level)
 		with open(os.path.join(settings.assets_dir, 'goal_prompt_snippet'), 'r') as f:
 			goal_msg = f.read()
 		goal_msg = goal_msg.replace('$goal_name$', goal_achieved.name)
@@ -105,7 +107,6 @@ class GameScreen(Screen):
 				self.file_explorer.populate_tree(parent_node=self.file_explorer.root, directory=self.level.fs.base_dir)
 				static_fstitle = self.query_exactly_one('#fs_title', Static)
 				static_fstitle.update(content=self._fs_title.replace('$user$', self.level.fs.current_user))
-				# TODO: This probably eats up too much context. Should edit past system messages with fs description so KARMA only looks at one at the time.
 				self.karma.include_fs(level=self.level)
 				if self.goals_display.check_for_goal(vfs=self.level.fs):
 					self.on_goal_achieved()

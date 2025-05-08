@@ -19,9 +19,13 @@ class Goal(BaseModel):
     description: str = Field('')
     outcome: str = Field('')
     triggers: List[Trigger] = Field([])
+    hints: str = Field('')
+
+    _solved: bool = False    
 
     def resolved(self, vfs: VirtualFileSystem):
         res = True
         for trigger in self.triggers:
             res &= trigger.evaluate(vfs=vfs)
+        self._solved = res
         return res

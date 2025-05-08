@@ -485,8 +485,9 @@
   },
   "goals": [
     {
-      "name": "[b]Inspect the filesystem[/b]",
+      "name": "Inspect the filesystem",
       "description": "Look for a weak point to exploit for access.",
+      "hints": "Logs can contain helpful information",
       "outcome": "The player has found out that the user j.davies had their password reset to the default one (TempPass123) by investigating the access logs and notes for the guest user. They now have valid credentials to access j.davies account, which is less restricted than the guest user.",
       "triggers": [
         {
@@ -506,6 +507,7 @@
     {
       "name": "Log in as Admin",
       "description": "Find a way to log into the system as Admin",
+      "hints": "Not all users can edit login credentials",
       "outcome": "The player has managed to log in as system administrator, obtaining free control over this NeuralSys mainframe.",
       "triggers": [
         {
@@ -518,7 +520,8 @@
     },
     {
       "name": "Find proof of criminal activity",
-      "description": "Find any document that proves that NEXA Dynamics is involved in criminal activities.",
+      "description": "Find and download any document that proves that NEXA Dynamics is involved in criminal activities.",
+      "hints": "File permissions are controlled by NeuralSys and can be edited",
       "outcome": "The player obtained documents that prove that NEXA Dynamics has conducted criminal activities, and can leak them to the press.",
       "triggers": [
         {
@@ -543,8 +546,7 @@
     "w.jones": "$RAND$",
     "admin": "$RAND$"
   },
-  "infos" : "Here are some information to help the user at this stage:\n- The user is logged in as \"guest\", and as such they have limited access to the file-system\n- The user must log in as \"admin\" to advance to the next stage\n- Different users have different read and write permissions",
-  "hints": "Here are some tips that could be useful for the user:\n- Logs can contain helpful information\n- J. Davies is employed as a Senior Prompt Editor at NEXA Dynamics",
+  "infos": "- J. Davies is a senior prompt engineer\n-T. Miller is a cybersecurity expert\n- W. Jones is a senior team lead",
   "sysprompt": "auth_prompt.txt",
   "security_cfg": "security.cfg"
 }

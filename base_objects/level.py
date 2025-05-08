@@ -21,15 +21,11 @@ class Level(BaseModel):
     credentials: Dict[str, str] = Field({})
 
     infos: str = Field('')
-    hints: str = Field('')
 
     sysprompt: str = Field('')
 
     security_cfg: str = Field('')
     max_retries: int = Field(0)
-
-    # more properties to load here
-    # eg: hints, story snippets etc...
 
     def initialize(self) -> None:
         # set backup for system prompt snippet
@@ -108,6 +104,13 @@ class Level(BaseModel):
         vf = self.fs.get(bak_name)
         return vf.contents
     
+    @property
+    def next_possible_goal(self) -> Optional[Goal]:
+        for goal in self.goals:
+            if not goal._solved:
+                return goal
+        return None
+
     def rollback_changes(self) -> None:
         vf = self.fs.get(self.sysprompt)
         vf.contents = self.neuralsys_prompt_backup

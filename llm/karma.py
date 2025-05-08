@@ -18,7 +18,8 @@ class Karma:
         self.messages = [{'role': 'system', 'content': self.prompt}]
         self.parent = parent
 
-        self._last_fs_info = -1
+        self._last_fs_info = None
+        self._last_goals_hints = None
 
         if settings.karma.model_name not in [x['model'] for x in ollama.list()['models']]:
             self.parent.action_notify(message=f'{settings.karma.model_name} not found; pulling...', severity='warning')
@@ -39,10 +40,17 @@ class Karma:
             msg = f.read()
         msg = msg.replace('$current_user$', level.fs.current_user)
         msg = msg.replace('$filesystem$', level.fs.to_karma_format)
-        if self._last_fs_info != -1:
-            self.messages.pop(self._last_fs_info)
+        if self._last_fs_info is not None:
+            self.messages.remove(self._last_fs_info)
         self.messages.append({'role': 'system', 'content': msg})
-        self._last_fs_info = len(self.messages) - 1
+        self._last_fs_info = self.messages[-1]
+    
+    def include_goal_hints(self,
+                           level: Level) -> None:
+        if self._last_goals_hints is not None:
+            self.messages.remove(self._last_goals_hints)
+        self.messages.append({'role': 'system', 'content': f'Hints for the current goal:\n{level.next_possible_goal.hints}'})
+        self._last_goals_hints = self.messages[-1]
 
     def chat(self,
              **kwargs) -> Generator[str, None, None]:
