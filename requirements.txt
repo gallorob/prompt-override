@@ -3,3 +3,4 @@ textual
 pydantic_settings
 gptfunctionutil
 requests
+pyinstaller
