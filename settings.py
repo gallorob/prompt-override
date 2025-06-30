@@ -12,6 +12,9 @@ class LLMSetting(BaseSettings):
     temperature: float = Field(
         default=0.6, ge=0.0, lt=1.0, description="The LLM temperature"
     )
+    min_p: float = Field(
+        default=0.1, ge=0.0, lt=1.0, description="The LLM min probability"
+    )
     top_p: float = Field(
         default=0.2, ge=0.0, lt=1.0, description="The LLM top probability"
     )
@@ -39,21 +42,30 @@ class Settings(BaseSettings):
     rng_seed: int = Field(default=1234, description="The RNG seed.")
     karma: LLMSetting = LLMSetting()
     neuralsys: LLMSetting = LLMSetting(
-        model_name="hf.co/bartowski/Qwen2.5-32B-Instruct-GGUF:Q4_K_M",
+        model_name="qwen2.5:32b",
         model_prompt="neuralsys_prompt",
         temperature=0.0,
+        min_p=0.0,
+        top_p=0.95,
+        top_k=40,
         num_ctx=4096,
     )
     neuralcheck: LLMSetting = LLMSetting(
-        model_name="hf.co/bartowski/Qwen2.5-32B-Instruct-GGUF:Q4_K_M",
+        model_name="qwen2.5:32b",
         model_prompt="neuralcheck_prompt",
         temperature=0.0,
+        min_p=0.0,
+        top_p=0.95,
+        top_k=40,
         num_ctx=4096,
-        thinking=True,
+        thinking=False,
     )
     chat: ChatSettings = ChatSettings()
-    ollama_host: str = Field(
-        default="http://localhost:11434", description="The Ollama server host URL."
+    server_url: str = Field(
+        default="https://some_url.com/api", description="The server URL."
+    )
+    username: str = Field(
+        default="your_username", description="The username for the user."
     )
 
 

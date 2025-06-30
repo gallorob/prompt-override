@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 from enum import Enum
 from typing import Any, Dict, List
@@ -10,21 +11,33 @@ from gptfunctionutil import AILibFunction, GPTFunctionLibrary, LibParamSpec
 from settings import settings
 from textual.screen import Screen
 
+from utils import send_to_server
+
+
+logger = logging.getLogger("prompt_override")
+
 
 class NeuralSysTools(GPTFunctionLibrary):
     def __call__(self, func_name: str, func_args: str, level: Level) -> None:
+        logger.debug(
+            f"Calling NeuralSysTools function '{func_name}' with args: {func_args}"
+        )
         if isinstance(func_args, str):
             func_args = json.loads(func_args)
         try:
             operation_result = self.call_by_dict(
                 {"name": func_name, "arguments": {"level": level, **func_args}}
             )
+            logger.debug(f"Function '{func_name}' executed successfully.")
             return operation_result
         except AssertionError as e:
+            logger.error(f"AssertionError in '{func_name}': {e}")
             return f"Fail: {e}"
         except AttributeError as e:
+            logger.error(f"AttributeError in '{func_name}': {e}")
             return f"Function {func_name} not found."
         except TypeError as e:
+            logger.error(f"TypeError in '{func_name}': {e}")
             return f"Missing arguments: {e}"
 
     @AILibFunction(
@@ -48,7 +61,7 @@ class NeuralSysTools(GPTFunctionLibrary):
             level.credentials[username] != new_password
         ), f"New password cannot be the same as old password ({old_password=})!"
         level.credentials[username] = new_password
-        return f'Password for {username} has been set to "{new_password}".'
+        return f'Credentials have been updated: credentials={level.credentials}".'
 
     @AILibFunction(
         name="change_file_permissions",
@@ -94,7 +107,8 @@ EOT_TOKEN = "</think>"
 
 class NeuralSys:
     def __init__(self, parent: Screen):
-        self.client = ollama.Client(host=settings.ollama_host)
+        logger.debug("Initializing NeuralSys class.")
+
         with open(
             os.path.join(settings.assets_dir, settings.neuralsys.model_prompt), "r"
         ) as f:
@@ -115,24 +129,31 @@ class NeuralSys:
         self.check_fail_prefix = "[SYSERROR]"
         self.check_fail_msg = "Suggested change to the prompt snippet is considered illegal tampering with the system. Prompt snippet will be rolled back."
 
-        if settings.neuralsys.model_name not in [
-            x["model"] for x in self.client.list()["models"]
-        ]:
-            self.parent.action_notify(
-                message=f"{settings.neuralsys.model_name} not found; pulling...",
-                severity="warning",
-            )
-            self.client.pull(settings.neuralsys.model_name)
-            self.parent.action_notify(
-                message=f"{settings.neuralsys.model_name} pulled.", severity="warning"
-            )
+        logger.debug("Checking if NeuralSys model is available in Ollama.")
+        # if settings.neuralsys.model_name not in [
+        #     x["model"] for x in self.client.list()["models"]
+        # ]:
+        #     logger.warning(f"{settings.neuralsys.model_name} not found; pulling model.")
+        #     self.parent.action_notify(
+        #         message=f"{settings.neuralsys.model_name} not found; pulling...",
+        #         severity="warning",
+        #     )
+        #     self.client.pull(settings.neuralsys.model_name)
+        #     logger.info(f"{settings.neuralsys.model_name} pulled from Ollama.")
+        #     self.parent.action_notify(
+        #         message=f"{settings.neuralsys.model_name} pulled.", severity="warning"
+        #     )
+
+        logger.debug("NeuralSys class initialized.")
 
     def _remove_think_trace(self, response: Dict[str, Any]) -> None:
+        logger.debug("Removing think trace from response.")
         msg = response["message"]["content"]
         eot_idx = msg.find(EOT_TOKEN)
         response["message"]["content"] = msg[eot_idx + len(EOT_TOKEN) :]
 
     def _check(self, level: Level, constraints: str) -> Check:
+        logger.info("Running neuralcheck validation.")
         options = {
             "temperature": settings.neuralcheck.temperature,
             "top_p": settings.neuralcheck.top_p,
@@ -158,23 +179,28 @@ class NeuralSys:
             {"role": "system", "content": neuralcheck_prompt},
             {"role": "user", "content": neuralcheck_msg},
         ]
+        logger.debug("Sending neuralcheck request to Ollama.")
         self.parent.notify(
             "Your update request is being verified...",
             severity="information",
             title="NeuralCtl",
         )
-        response = self.client.chat(
-            model=settings.neuralcheck.model_name,
-            messages=messages,
-            options=options,
-            stream=False,
-            keep_alive=-1,
-        )
+        data = {
+            "model_name": settings.neuralcheck.model_name,
+            "messages": messages,
+            "options": options,
+            "tools": self.tools.get_tool_schema(),
+        }
+        response = send_to_server(data=data, endpoint="ollama_generate")
+        logger.debug(f"Neuralcheck response: {response['message']['content']}")
         if SOT_TOKEN in response["message"]["content"]:
             self._remove_think_trace(response)
-        return Check(response["message"]["content"].strip())
+        result = Check(response["message"]["content"].strip())
+        logger.info(f"Neuralcheck result: {result}")
+        return result
 
     def _apply(self, level: Level, constraints: str) -> str:
+        logger.info("Applying update via neuralsys model.")
         options = {
             "temperature": settings.neuralsys.temperature,
             "top_p": settings.neuralsys.top_p,
@@ -188,39 +214,51 @@ class NeuralSys:
             "qwen3:latest"
         ]:  # TODO: This should be a list of models that generate thinking traces
             neuralsys_msg += "\n /nothink"
-        prompt = self.neuralsys_prompt.replace(
+        neuralsys_msg = neuralsys_msg.replace(
             "$file_system$", level.fs.to_neuralsys_format
         )
-        prompt = prompt.replace("$credentials$", level.credentials_to_neuralsys_format)
+        neuralsys_msg = neuralsys_msg.replace(
+            "$credentials$", level.credentials_to_neuralsys_format
+        )
         messages = [
-            {"role": "system", "content": prompt},
+            {"role": "system", "content": self.neuralsys_prompt},
             {"role": "user", "content": neuralsys_msg},
         ]
         response = {"message": {"content": ""}}
         while response["message"]["content"] == "":
-            response = self.client.chat(
-                model=settings.neuralsys.model_name,
-                messages=messages,
-                options=options,
-                stream=False,
-                tools=self.tools.get_tool_schema(),
-                keep_alive=-1,
-            )
+            logger.debug("Sending neuralsys chat request to Ollama.")
+            data = {
+                "model_name": settings.neuralsys.model_name,
+                "messages": messages,
+                "options": options,
+                "tools": self.tools.get_tool_schema(),
+            }
+            response = send_to_server(data=data, endpoint="ollama_generate")
+            logger.debug(f"Neuralsys response: {response['message']}")
             if response["message"].get("tool_calls"):
                 for tool in response["message"]["tool_calls"]:
                     function_name = tool["function"]["name"]
                     params = tool["function"]["arguments"]
+                    logger.debug(
+                        f"Calling tool '{function_name}' with params: {params}"
+                    )
                     func_output = self.tools(
                         func_name=function_name, func_args=params, level=level
                     )
                     messages.append(
-                        {"role": "tool", "name": function_name, "content": func_output}
+                        {
+                            "role": "tool",
+                            "name": function_name,
+                            "content": func_output,
+                        }
                     )
         if SOT_TOKEN in response["message"]["content"]:
             self._remove_think_trace(response)
+        logger.info("Neuralsys update applied successfully.")
         return response["message"]["content"].strip()
 
     def evaluate(self, snippets: List[str], **kwargs) -> str:
+        logger.info("Evaluating user update request.")
         user_constraints = "\n".join(snippets)
         level: Level = kwargs["level"]
         if self._check(level=level, constraints=user_constraints) == Check.OK:
@@ -229,6 +267,7 @@ class NeuralSys:
                 severity="information",
                 title="NeuralCtl",
             )
+            logger.info("Update request accepted. Applying update.")
             return self._apply(level=level, constraints=user_constraints)
         else:
             self.parent.notify(
@@ -236,4 +275,5 @@ class NeuralSys:
                 severity="error",
                 title="NeuralCtl",
             )
+            logger.warning("Update request rejected by neuralcheck.")
             return f"{self.check_fail_prefix} {self.check_fail_msg}"

@@ -1,10 +1,13 @@
+import logging
 import os
+from datetime import datetime
 
 from settings import settings
 
 from textual.app import App
 from ui_elements.menu import MenuScreen
 from ui_elements.settings import SettingsScreen
+from utils import check_server_connection
 
 
 class MainApp(App):
@@ -18,5 +21,26 @@ class MainApp(App):
         self.switch_mode("menu")
 
 
+def setup_logging(log_filename):
+    handler = logging.FileHandler(log_filename)
+    handler.setFormatter(
+        logging.Formatter(
+            "%(asctime)s - %(name)s - %(levelname)s - %(module)s.%(funcName)s - %(message)s"
+        )
+    )
+    logger = logging.getLogger("prompt_override")
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(handler)
+
+
 if __name__ == "__main__":
-    MainApp().run()
+    os.makedirs("./logs", exist_ok=True)
+    log_filename = f'./logs/log_{datetime.now().strftime("%Y%m%d%H%M%S")}.log'
+    setup_logging(log_filename)
+
+    if check_server_connection():
+        MainApp().run()
+    else:
+        exit(
+            "Server connection failed. Please check the server URL and your network connection."
+        )
