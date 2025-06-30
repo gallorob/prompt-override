@@ -62,11 +62,9 @@ class Settings(BaseSettings):
     )
     chat: ChatSettings = ChatSettings()
     server_url: str = Field(
-        default="https://some_url.com/api", description="The server URL."
+        default="https://llmaker.research.um.edu.mt", description="The server URL."
     )
-    username: str = Field(
-        default="your_username", description="The username for the user."
-    )
+    username: str = Field(default="gallorob", description="The username for the user.")
 
 
 settings = Settings()
