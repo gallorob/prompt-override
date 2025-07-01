@@ -8,7 +8,6 @@ from textual.binding import Binding
 from textual.containers import Center, Container, Vertical
 from textual.screen import Screen
 from textual.widgets import Button, Footer, Static
-from ui_elements.game import GameScreen
 from ui_elements.intro import IntroScreen
 from utils import check_server_connection
 

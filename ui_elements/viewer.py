@@ -1,35 +1,31 @@
+from base_objects.vfs import File
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Container
 from textual.screen import ModalScreen
 from textual.widgets import Footer, Header, TextArea
 
-from base_objects.vfs import File
-
 
 class ViewerScreen(ModalScreen):
     def __init__(self, file_obj: File) -> None:
         super().__init__()
         self.file_obj = file_obj
-        self.text_area = TextArea(self.file_obj.contents,
-                                  read_only=True,
-                                  show_line_numbers=True)
-        self.text_area.theme = 'vscode_dark'
+        self.text_area = TextArea(
+            self.file_obj.contents, read_only=True, show_line_numbers=True
+        )
+        self.text_area.theme = "vscode_dark"
 
-        self.title = 'Viewer'
+        self.title = "Viewer"
         self.sub_title = self.file_obj.name
-        
-    
+
     BINDINGS = [
-        Binding('escape', 'close_viewer', 'Quit', priority=True),
+        Binding("escape", "close_viewer", "Quit", priority=True),
     ]
 
     def compose(self) -> ComposeResult:
-        yield Header(show_clock=True, icon='')
-        yield Container(self.text_area,
-                        id='viewer')
+        yield Header(show_clock=True, icon="")
+        yield Container(self.text_area, id="viewer")
         yield Footer()
 
     def action_close_viewer(self):
         self.app.pop_screen()
-    

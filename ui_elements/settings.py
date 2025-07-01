@@ -1,11 +1,11 @@
 from pydantic import BaseModel
+
+from settings import settings
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Center, ScrollableContainer
 from textual.screen import Screen
 from textual.widgets import Button, Footer, Input, Static
-
-from settings import settings
 
 
 class SettingsScreen(Screen):
@@ -13,10 +13,12 @@ class SettingsScreen(Screen):
     BINDINGS = [Binding("escape", "quit", "Back to main menu")]
 
     def compose(self) -> ComposeResult:
-        yield Center(Static("[bold]Settings[/bold]", markup=True, classes="horizontal-centered"))
+        yield Center(
+            Static("[bold]Settings[/bold]", markup=True, classes="horizontal-centered")
+        )
         self.container = ScrollableContainer()
         yield self.container
-        yield Center(Button("Save Settings", id='save_button'))
+        yield Center(Button("Save Settings", id="save_button"))
         yield Footer()
 
     async def on_mount(self) -> None:
@@ -25,9 +27,11 @@ class SettingsScreen(Screen):
     def build_settings_ui(self, obj: BaseModel, prefix="") -> None:
         for key, value in obj.model_dump().items():
             full_key = f"{prefix}{key}"
-            
-            if isinstance(value, dict):  
-                self.container.mount(Static(f"[bold]{full_key}[/bold]:", classes="horizontal-centered"))
+
+            if isinstance(value, dict):
+                self.container.mount(
+                    Static(f"[bold]{full_key}[/bold]:", classes="horizontal-centered")
+                )
                 self.build_settings_ui(getattr(obj, key), prefix=f"{full_key}-")
             else:
                 input_widget = Input(value=str(value), id=f"input_{full_key}")
@@ -35,7 +39,7 @@ class SettingsScreen(Screen):
 
     def action_quit(self) -> None:
         self.app.switch_mode("menu")
-    
+
     async def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "save_button":
             self.save_settings()
@@ -46,7 +50,7 @@ class SettingsScreen(Screen):
         updated_values = {}
 
         for widget in self.container.query(Input):
-            key = widget.id.replace("input_", "").replace('-', '.')
+            key = widget.id.replace("input_", "").replace("-", ".")
             raw_value = widget.value
 
             try:
@@ -55,7 +59,9 @@ class SettingsScreen(Screen):
                 self.set_nested_value(settings, key, new_value)
                 updated_values[key] = new_value
             except ValueError:
-                self.app.notify(f"Invalid value for {key}: {raw_value}", severity="error")
+                self.app.notify(
+                    f"Invalid value for {key}: {raw_value}", severity="error"
+                )
                 return
         self.app.notify("Settings saved successfully!", severity="info")
 
@@ -77,5 +83,5 @@ class SettingsScreen(Screen):
         elif expected_type == float:
             return float(raw_value)
         elif expected_type == bool:
-            return raw_value.lower() == 'true'
+            return raw_value.lower() == "true"
         return str(raw_value)

@@ -8,9 +8,8 @@ from settings import settings
 
 
 def check_server_connection() -> bool:
-    server_url = settings.server_url
     try:
-        response = get(f"{server_url}/ollama_list_models")
+        response = get(f"{settings.server_url}/ollama_list_models")
         if response.status_code == 200:
             logging.getLogger("prompt_override").debug(
                 f"Server response: {response.status_code} - {response.text}"
@@ -22,14 +21,12 @@ def check_server_connection() -> bool:
 
 
 def send_to_server(data: Optional[Dict[str, Any]], endpoint) -> Response:
-    server_url = settings.server_url
-    username = settings.user_name
     if data:
-        uid = sha224(username.encode("utf-8")).hexdigest()
+        uid = sha224(settings.user_name.encode("utf-8")).hexdigest()
         payload = {"uid": uid, **data}
-        response = post(f"{server_url}/{endpoint}", json=payload)
+        response = post(f"{settings.server_url}/{endpoint}", json=payload)
     else:
-        response = get(f"{server_url}/{endpoint}")
+        response = get(f"{settings.server_url}/{endpoint}")
     if response.status_code != 200:
         logging.getLogger("prompt_override").error(
             f"Server error: {response.status_code} - {response.text}"

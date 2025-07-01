@@ -7,7 +7,6 @@ from settings import settings
 from textual.app import App
 from ui_elements.menu import MenuScreen
 from ui_elements.settings import SettingsScreen
-from utils import check_server_connection
 
 
 class MainApp(App):
