@@ -1,5 +1,14 @@
+import os
+import sys
+
 from pydantic import Field
 from pydantic_settings import BaseSettings
+
+
+def resource_path(relative_path):
+    if hasattr(sys, "_MEIPASS"):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
 
 
 class LLMSetting(BaseSettings):
@@ -34,7 +43,8 @@ class ChatSettings(BaseSettings):
 
 class Settings(BaseSettings):
     assets_dir: str = Field(
-        default="./assets", description="The location of the assets directory."
+        default=resource_path("./assets"),
+        description="The location of the assets directory.",
     )
     title: str = Field(
         default="title.txt", description="The location of the title ASCII art."
