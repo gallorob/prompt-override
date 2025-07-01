@@ -23,7 +23,7 @@ def check_server_connection() -> bool:
 
 def send_to_server(data: Optional[Dict[str, Any]], endpoint) -> Response:
     server_url = settings.server_url
-    username = settings.username
+    username = settings.user_name
     if data:
         uid = sha224(username.encode("utf-8")).hexdigest()
         payload = {"uid": uid, **data}

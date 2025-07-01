@@ -38,9 +38,4 @@ if __name__ == "__main__":
     log_filename = f'./logs/log_{datetime.now().strftime("%Y%m%d%H%M%S")}.log'
     setup_logging(log_filename)
 
-    if check_server_connection():
-        MainApp().run()
-    else:
-        exit(
-            "Server connection failed. Please check the server URL and your network connection."
-        )
+    MainApp().run()
