@@ -3,8 +3,21 @@ Screen {
     align: center top;
 }
 
-#menu_buttons {
+#menu_container {
     align: center top;
+}
+
+.menu_buttons {
+    height: 100%;
+}
+
+#menu_grid {
+    layout: grid;
+    grid-size: 1;
+    grid-columns: 1fr;
+    grid-rows: 1fr;
+    dock: top;
+    height: 75%;
 }
 
 .quit_buttons {
