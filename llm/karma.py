@@ -30,20 +30,29 @@ class Karma:
         self._last_goals_hints = None
 
         logger.debug("Checking if model is available in Ollama.")
-        # if settings.karma.model_name not in [
-        #     x["model"] for x in self.client.list()["models"]
-        # ]:
-        #     logger.warning(f"{settings.karma.model_name} not found; pulling model.")
-        #     self.parent.action_notify(
-        #         message=f"{settings.karma.model_name} not found; pulling...",
-        #         severity="warning",
-        #     )
-        #     self.client.pull(settings.karma.model_name)
-        #     logger.info(f"{settings.karma.model_name} pulled from Ollama.")
-        #     self.parent.action_notify(
-        #         message=f"{settings.karma.model_name} pulled.", severity="warning"
-        #     )
 
+        if (
+            settings.karma.model_name
+            not in send_to_server(data=None, endpoint="ollama_list_models")["models"]
+        ):
+            logger.warning(
+                f"{settings.karma.model_name} not found; pulling model. This may take a while."
+            )
+            self.parent.action_notify(
+                message=f"{settings.karma.model_name} not found; pulling...",
+                severity="warning",
+                title="GameEngine",
+            )
+            send_to_server(
+                data={"model_name": settings.karma.model_name},
+                endpoint="ollama_init_model",
+            )
+            logger.info(f"{settings.karma.model_name} pulled from Ollama.")
+            self.parent.action_notify(
+                message=f"{settings.karma.model_name} pulled from Ollama.",
+                severity="warning",
+                title="GameEngine",
+            )
         logger.debug("Karma class initialized.")
 
     def combine_messages(self, msgs: List[str]) -> str:

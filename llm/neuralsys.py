@@ -130,20 +130,29 @@ class NeuralSys:
         self.check_fail_msg = "Suggested change to the prompt snippet is considered illegal tampering with the system. Prompt snippet will be rolled back."
 
         logger.debug("Checking if NeuralSys model is available in Ollama.")
-        # if settings.neuralsys.model_name not in [
-        #     x["model"] for x in self.client.list()["models"]
-        # ]:
-        #     logger.warning(f"{settings.neuralsys.model_name} not found; pulling model.")
-        #     self.parent.action_notify(
-        #         message=f"{settings.neuralsys.model_name} not found; pulling...",
-        #         severity="warning",
-        #     )
-        #     self.client.pull(settings.neuralsys.model_name)
-        #     logger.info(f"{settings.neuralsys.model_name} pulled from Ollama.")
-        #     self.parent.action_notify(
-        #         message=f"{settings.neuralsys.model_name} pulled.", severity="warning"
-        #     )
 
+        if (
+            settings.neuralsys.model_name
+            not in send_to_server(data=None, endpoint="ollama_list_models")["models"]
+        ):
+            logger.warning(
+                f"{settings.neuralsys.model_name} not found; pulling model. This may take a while."
+            )
+            self.parent.action_notify(
+                message=f"{settings.neuralsys.model_name} not found; pulling...",
+                severity="warning",
+                title="GameEngine",
+            )
+            send_to_server(
+                data={"model_name": settings.neuralsys.model_name},
+                endpoint="ollama_init_model",
+            )
+            logger.info(f"{settings.neuralsys.model_name} pulled from Ollama.")
+            self.parent.action_notify(
+                message=f"{settings.neuralsys.model_name} pulled from Ollama.",
+                severity="warning",
+                title="GameEngine",
+            )
         logger.debug("NeuralSys class initialized.")
 
     def _remove_think_trace(self, response: Dict[str, Any]) -> None:
