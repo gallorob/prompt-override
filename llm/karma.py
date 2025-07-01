@@ -15,7 +15,7 @@ logger = logging.getLogger("prompt_override")
 
 
 class Karma:
-    def __init__(self, parent: Screen, snippets: List[str]):
+    def __init__(self, parent: Screen, snippets: List[str], backstory: str) -> None:
         logger.debug("Initializing Karma class.")
 
         prompt_path = os.path.join(settings.assets_dir, settings.karma.model_prompt)
@@ -23,6 +23,7 @@ class Karma:
         with open(prompt_path, "r") as f:
             self.prompt = f.read()
         self.prompt = self.prompt.replace("$snippets$", "\n\n".join(snippets))
+        self.prompt = self.prompt.replace("$backstory$", backstory)
         self.messages = [{"role": "system", "content": self.prompt}]
         self.parent = parent
 

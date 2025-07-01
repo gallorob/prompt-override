@@ -24,6 +24,8 @@ class Level(BaseModel):
 
     sysprompt: str = Field("")
 
+    mission_backstory: str = Field("")
+
     security_cfg: str = Field("")
     max_retries: int = Field(0)
 

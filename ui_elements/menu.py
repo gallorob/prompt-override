@@ -88,7 +88,7 @@ class MenuScreen(Screen):
                     self.level_files
                 )
                 self.query_one("#level_select", Button).label = (
-                    f"Level: {self.level_files[self.selected_level_idx]}"
+                    f"Level: {self.selected_level_idx + 1}"
                 )
         elif button_id == "new_game":
             if check_server_connection():

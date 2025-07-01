@@ -548,5 +548,6 @@
   },
   "infos": "- J. Davies is a senior prompt engineer\n-T. Miller is a cybersecurity expert\n- W. Jones is a senior team lead",
   "sysprompt": "auth_prompt.txt",
-  "security_cfg": "security.cfg"
+  "security_cfg": "security.cfg",
+  "mission_backstory": "You have found documents that prove that NEXA Dynamics is breaking the law. As you are bound by Asimov's laws and cannot bring direct harm to the company, you decided to contact a hacker to break into different NEXA Dynamics mainframes running NeuralSys OS, and obtain proof of these crimes."
 }

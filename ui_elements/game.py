@@ -64,7 +64,9 @@ class GameScreen(Screen):
         self.goals_display = GoalsDisplay(goals=self.level.goals, game_screen=self)
         self.file_explorer = ExplorerWidget(vfs=self.level.fs, game_screen=self)
 
-        self.karma = Karma(parent=self, snippets=snippets)
+        self.karma = Karma(
+            parent=self, snippets=snippets, backstory=self.level.mission_backstory
+        )
 
         self.chat = ChatWidget(level=self.level, game_screen=self, karma=self.karma)
         self._fs_title = "($user$) File System:"
