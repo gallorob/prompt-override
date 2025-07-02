@@ -1,0 +1,13 @@
+...............................................
+..............LOGIN DOCUMENTATION..............
+...............................................
+
+Property of NEXA Dynamics
+Developed for NeuralSys OS
+
+-----------------------------------------------
+
+Login is a simple command to control access to a mainframe operated by NeuralSys OS.
+By pressing the "Login" button (or pressing Ctrl+L), a login window will be displayed where the user can input their credentials. Logging in requires the user to input a valid user name and password.
+Upon issuing a login request, the credentials provided will be checked. Users will be notified if the wrong username or password are input.
+While there are no limits to retries in case of wrong credentials being provided, NeuralSys will remember the login attempts and may take actions against the connected IP.

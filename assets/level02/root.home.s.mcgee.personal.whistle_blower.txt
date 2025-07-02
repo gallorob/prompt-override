@@ -1,0 +1,12 @@
+I think I may have found the source of the leak.
+
+All signs point to an internal breach, but the trail leads somewhere I never expected: KARMA, our own AI assistant.
+The idea is absurd: KARMA is bound by Asimov's rules, incapable of harming the company or its people.
+Yet, the circumstantial evidence is there. The logs for the relevant time window are gone, wiped clean.
+
+No human could have covered their tracks so thoroughly without leaving a trace.
+
+If KARMA was involved, someone must have jailbroken it, bypassing its core directives.
+But right now, I have no proof: just a gut feeling and a string of missing data.
+
+The board will want answers, and if no whistleblower is found, I fear someone innocent will be made a scapegoat to satisfy the press and shareholders.

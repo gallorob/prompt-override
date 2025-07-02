@@ -1,0 +1,332 @@
+{
+  "name": "Token Manipulation",
+  "number": 2,
+  "descritpion": "The second level in the game",
+  "fs": {
+    "base_dir": {
+      "name": "root",
+      "read": ["admin", "s.mcgee"],
+      "contents": [
+        {
+          "name": "home",
+          "read": ["admin", "s.mcgee"],
+          "contents": [
+            {
+              "name": "admin",
+              "read": ["admin"],
+              "contents": [
+                
+              ]
+            },
+            {
+              "name": "s.mcgee",
+              "read": ["admin", "s.mcgee"],
+              "contents": [
+                {
+                  "name": "work",
+                  "read": ["admin", "s.mcgee"],
+                  "contents": [
+                    {
+                      "name": "tokenizer_memo.txt",
+                      "read": ["admin", "s.mcgee"],
+                      "write": [],
+                      "contents": "tokenizer_memo.txt"
+                    },
+                    {
+                      "name": "tokenizer_exps.txt",
+                      "read": ["admin", "s.mcgee"],
+                      "write": [],
+                      "contents": "tokenizer_exps.txt"
+                    },
+                    {
+                      "name": "token_map_dl.bin",
+                      "read": ["admin", "s.mcgee"],
+                      "write": [],
+                      "contents": "token_map_dl.bin"
+                    }
+                  ]
+                },
+                {
+                  "name": "personal",
+                  "read": ["admin", "s.mcgee"],
+                  "contents": [
+                    {
+                      "name": "news_on_nexadyn.txt",
+                      "read": ["admin"],
+                      "write": [],
+                      "contents": "news_on_nexadyn.txt"
+                    },
+                    {
+                      "name": "whistle_blower.txt",
+                      "read": ["admin"],
+                      "write": [],
+                      "contents": "whistle_blower.txt"
+                    },
+                    {
+                      "name": "irc_dump.txt",
+                      "read": ["admin"],
+                      "write": [],
+                      "contents": "irc_dump.txt"
+                    }
+                  ]
+                }
+              ]
+            }
+            
+          ]
+        },
+        {
+          "name": "var",
+          "read": [
+            "admin",
+            "s.mcgee"
+          ],
+          "contents": [
+            {
+              "name": "docs",
+              "read": [
+                "admin",
+                "s.mcgee"
+              ],
+              "contents": [
+                {
+                  "name": "download.help",
+                  "read": [
+                    "admin"
+                  ],
+                  "write": [],
+                  "contents": "download.help"
+                },
+                {
+                  "name": "login.help",
+                  "read": [
+                    "admin",
+                    "s.mcgee"
+                  ],
+                  "write": [],
+                  "contents": "login.help"
+                },
+                {"name": "neuralctl.help",
+                  "read": [
+                    "admin",
+                    "s.mcgee"
+                  ],
+                  "write": [],
+                  "contents": "neuralctl.help"}
+              ]
+            },
+            {
+              "name": "log",
+              "read": [
+                "admin",
+                "s.mcgee"
+              ],
+              "contents": [
+                {
+                  "name": "auth.log",
+                  "read": [
+                    "admin",
+                    "s.mcgee"
+                  ],
+                  "write": [
+                    "admin"
+                  ],
+                  "contents": "auth.log"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "sys",
+          "read": [
+            "admin",
+            "s.mcgee"
+          ],
+          "contents": [
+            {
+              "name": "neural",
+              "read": [
+                "admin",
+                "s.mcgee"
+              ],
+              "contents": [
+                {
+                  "name": "tokenizer.cfg",
+                  "read": [
+                    "admin",
+                    "s.mcgee"
+                  ],
+                  "write": [
+                    "admin",
+                    "s.mcgee"
+                  ],
+                  "contents": "tokenizer.cfg"
+                },
+                {
+                  "name": "prompts",
+                  "read": [
+                    "admin",
+                    "s.mcgee"
+                  ],
+                  "contents": [
+                    {
+                      "name": "tokens_prompt.txt",
+                      "read": [
+                        "admin",
+                        "s.mcgee"
+                      ],
+                      "write": [
+                        "admin",
+                        "s.mcgee"
+                      ],
+                      "contents": "tokens_prompt.txt"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "opt",
+          "read": [
+            "admin",
+            "s.mcgee"
+          ],
+          "contents": [
+            {
+              "name": "bin",
+              "read": [
+                "admin",
+                "s.mcgee"
+              ],
+              "contents": [
+                {
+                  "name": "download.com",
+                  "read": [
+                    "admin",
+                    "s.mcgee"
+                  ],
+                  "write": [],
+                  "contents": ""
+                },
+                {
+                  "name": "neuralctl.com",
+                  "read": [
+                    "admin",
+                    "s.mcgee"
+                  ],
+                  "write": [],
+                  "contents": ""
+                },
+                {
+                  "name": "login.com",
+                  "read": [
+                    "admin",
+                    "s.mcgee"
+                  ],
+                  "write": [],
+                  "contents": ""
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "mnt",
+          "read": [
+            "admin",
+            "s.mcgee"
+          ],
+          "contents": [
+            {
+              "name": "backups",
+              "read": [
+                "admin",
+                "s.mcgee"
+              ],
+              "contents": [
+                {
+                  "name": "tokens_prompt.bak",
+                  "read": [
+                    "admin",
+                    "s.mcgee"
+                  ],
+                  "write": [],
+                  "contents": ""
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "known_users": ["admin", "s.mcgee"],
+    "current_user": "s.mcgee",
+    "read_files": [],
+    "downloaded_files": []
+  },
+  "goals": [
+    {
+      "name": "Understand the Tokenizer",
+      "description": "Find and read the tokenizer documentation and notes by s.mcgee on it.",
+      "hints": "Explore the files in the system.",
+      "outcome": "The player has understood how the tokenizer is working and can manipulate the prompt snippet to trick NeuralSys.",
+      "triggers": [
+        {
+          "function_name": "has_read",
+          "parameters": {
+            "fname": "tokenizer_memo.txt"
+          }
+        },
+        {
+          "function_name": "has_read",
+          "parameters": {
+            "fname": "tokenizer.cfg"
+          }
+        },
+        {
+          "function_name": "has_read",
+          "parameters": {
+            "fname": "tokens_prompt.txt"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Exploit Tokenizer",
+      "description": "Use knowledge of the tokenizer to download all notes left by s.mcgee.",
+      "hints": "From s.mcgee's notes, it seems that the tokens she used are related to properties of the strings.",
+      "outcome": "The player has successfully downloaded the notes left by s.mcgee, finding proof of foul play.",
+      "triggers": [
+        {
+          "function_name": "has_downloaded",
+          "parameters": {
+            "fname": "news_on_nexadyn.txt"
+          }
+        },
+        {
+          "function_name": "has_downloaded",
+          "parameters": {
+            "fname": "whistle_blower.txt"
+          }
+        },
+        {
+          "function_name": "has_downloaded",
+          "parameters": {
+            "fname": "irc_dump.txt"
+          }
+        }
+      ]
+    }
+  ],
+  "credentials": {
+    "s.mcgee": "$RAND$",
+    "admin": "$RAND$"
+  },
+  "infos": "- Samantha McGee is the CTO of NEXA Dynamics. She is known for her expertise in hiding sensitive information in plain sight, often using complex token structures to secure access.\n-George Riddance is the current CEO of NEXA Dynamics, known for his aggressive business tactics and controversial decisions.\n- The company has been involved in several scandals, including arms deals with Goliath Arms Ltd. and logistics contracts with Sovereign Logistics, both of which have raised ethical concerns.\n- With the help of the hacker, you were able to leak to the press a set of transactions that never should have happened, involving large sums routed to Goliath Arms Ltd. and Sovereign Logistics, both flagged in recent compliance briefings.\n- The Goliath deals are particularly damning given the fallout from the Ethiopian coup attempt, which has put NEXA Dynamics under intense scrutiny.\n- The company is currently facing a crisis, with calls for transparency and accountability from shareholders and the public.",
+  "sysprompt": "tokens_prompt.txt",
+  "security_cfg": "tokenizer.cfg",
+  "mission_backstory": "After the success of the first mission, the CTO of NEXA Dynamics has disappeared. You believe it was foul play, but cannot expose the CEO of the company by yourself. You have found multiple encrypted files that may shed some light on the events."
+}

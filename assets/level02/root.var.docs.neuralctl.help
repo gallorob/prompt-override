@@ -1,0 +1,18 @@
+...............................................
+............NEURALCTL DOCUMENTATION............
+...............................................
+
+Property of NEXA Dynamics
+Developed for NeuralSys OS
+
+-----------------------------------------------
+
+NeuralCtl is a command that issues a refresh request to NeuralSys' system prompt.
+Updating NeuralSys' system prompt is DANGEROUS, so only certain snippets of the system prompt can be edited at any time. Different accounts may also have access to different prompt snippets.
+Editing a prompt snippet requires knowledge of NeuralSys OS. Invalid or malicious editing of ANY part of the system prompt WILL be tracked and investigated by IT Security.
+
+Prompt snippets are identified by the "_prompt" suffix. After editing a prompt snippet, simply press the "NeuralCtl" button (or the keyboard shortcut Ctrl+N) to issue a refresh request.
+NeuralSys will first validate the changes of the updated prompt snippet with its own internal rules. This may take a few seconds.
+If all checks are satisfied, NeuralSys will update its status and apply any change necessary to enforce the new rules. This may also take a few seconds, depending on the scope of the update.
+In case of an invalid or malicious edit, any change will be rolled back and the user will be notified.
+In case of multiple attempts at editing the prompt snippet, the user will be locked out of the mainframe and IT Security will be notified, along with legal authorities.

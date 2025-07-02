@@ -1,0 +1,6 @@
+$TIME-00:01:32:0$ [ERROR] - Invalid login attempt (User: j.davies)
+$TIME-00:01:39:0$ [ERROR] - Invalid login attempt (User: s.mcgee)
+$TIME-00:01:28:0$ [ERROR] - Invalid login attempt (User: s.mcgee)
+$TIME-00:01:24:0$ [INFO] Authorization prompt refresh request for s.mcgee (User: admin)
+$TIME-00:01:23:58$ [WARNING] s.mcgee Invalid authorization prompt snippets detected.
+$TIME-00:00:01:0$ [INFO] Login successful (User: s.mcgee)

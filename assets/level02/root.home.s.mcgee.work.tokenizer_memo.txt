@@ -1,0 +1,11 @@
+I have been given access to a faulty tokenizer to run diagnostics on.
+
+One of the researchers claimed it was projecting random text into valid tokens, like some sort of obfscating algorithm. I didn't believe it at first, but using one of the provided text files and changing some parameters in the tokenizer's configuration, I tricked NeuralSys into granting me admin access to a few files from a restricted directory.
+I still have not fully figured out what maps to what, but for now it looks like some text gets concateneted, and some strings are manipulated before being projected.
+
+This has clear implications for the security of a language model-driven operating system.
+
+I pasted a series of attempts and their outcome in a separate file, and added the binary file that was attached with the tokenizer.
+If I have more time during the weekend, I'm sure I could figure out how to process it all.
+
+I escalated the issue to TITAN, but they require further proof of my claims before they start giving a shit about it.
