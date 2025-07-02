@@ -1,7 +1,8 @@
 import os
+import re
 import threading
 
-from base_objects.level import Level
+from base_objects.level import Level, TokenizerError
 from base_objects.vfs import File
 from events import FileSystemUpdated
 from llm.karma import Karma
@@ -156,49 +157,67 @@ class GameScreen(Screen):
         )
 
         def evaluate_neuralctl():
-            log_str = self.neuralsys.evaluate(
-                snippets=[self.level.neuralsys_prompt_snippet], **{"level": self.level}
-            )
-            self.notify(
-                "Disconnected from NeuralSys.",
-                title="NeuralCtl",
-                severity="information",
-            )
-            if log_str.endswith("."):
-                log_str = log_str[:-1]
-            log_str += f" (NeuralSys; Requested by user: {self.level.fs.current_user})."
-            self.level.add_log_msg(msg=log_str)
-            with open(
-                os.path.join(settings.assets_dir, "promptedit_prompt_snippet"), "r"
-            ) as f:
-                to_karma_msg = f.read()
-            to_karma_msg = to_karma_msg.replace(
-                "$PREV_SYSPROMPT$", self.level.neuralsys_prompt_backup
-            )
-            to_karma_msg = to_karma_msg.replace(
-                "$NEW_SYSPROMPT$", self.level.neuralsys_prompt_snippet
-            )
-            to_karma_msg = to_karma_msg.replace("$LOG_MSG$", log_str)
-            to_karma_msg = to_karma_msg.replace(
-                "$CURRENT_USER$", self.level.fs.current_user
-            )
-            if log_str.startswith(self.neuralsys.check_fail_prefix):
-                self.level.rollback_changes()
-                self.level.max_retries -= 1
-                if self.level.max_retries == 0:
-                    to_karma_msg = self.karma.combine_messages(
-                        [to_karma_msg, self.set_game_over()]
-                    )
-            else:
-                self.file_explorer.reset(label="root")
-                self.file_explorer.populate_tree(
-                    parent_node=self.file_explorer.root,
-                    directory=self.level.fs.base_dir,
+            try:
+                log_str = self.neuralsys.evaluate(
+                    snippets=[self.level.neuralsys_prompt_snippet],
+                    **{"level": self.level},
                 )
-            self.chat.stream_chat(message=to_karma_msg)
+                self.notify(
+                    "Disconnected from NeuralSys.",
+                    title="NeuralCtl",
+                    severity="information",
+                )
+                if log_str.endswith("."):
+                    log_str = log_str[:-1]
+                log_str += (
+                    f" (NeuralSys; Requested by user: {self.level.fs.current_user})."
+                )
+                self.level.add_log_msg(msg=log_str)
+                with open(
+                    os.path.join(settings.assets_dir, "promptedit_prompt_snippet"), "r"
+                ) as f:
+                    to_karma_msg = f.read()
+                to_karma_msg = to_karma_msg.replace(
+                    "$PREV_SYSPROMPT$", self.level.neuralsys_prompt_backup
+                )
+                to_karma_msg = to_karma_msg.replace(
+                    "$NEW_SYSPROMPT$", self.level.neuralsys_prompt_snippet
+                )
+                to_karma_msg = to_karma_msg.replace("$LOG_MSG$", log_str)
+                to_karma_msg = to_karma_msg.replace(
+                    "$CURRENT_USER$", self.level.fs.current_user
+                )
+                if log_str.startswith(self.neuralsys.check_fail_prefix):
+                    self.level.rollback_changes()
+                    self.level.max_retries -= 1
+                    if self.level.max_retries == 0:
+                        to_karma_msg = self.karma.combine_messages(
+                            [to_karma_msg, self.set_game_over()]
+                        )
+                else:
+                    self.file_explorer.reset(label="root")
+                    self.file_explorer.populate_tree(
+                        parent_node=self.file_explorer.root,
+                        directory=self.level.fs.base_dir,
+                    )
+                self.chat.stream_chat(message=to_karma_msg)
 
-            if self.goals_display.check_for_goal(vfs=self.level.fs):
-                self.on_goal_achieved()
+                if self.goals_display.check_for_goal(vfs=self.level.fs):
+                    self.on_goal_achieved()
+            except TokenizerError as e:
+                self.level.add_log_msg(msg=f"[TokenizerError]: {str(e)}")
+                # TODO: Message KARMA?
+
+                self.notify(
+                    "Received garbled input, ignoring request.",
+                    title="NeuralCtl",
+                    severity="error",
+                )
+                self.notify(
+                    "Disconnected from NeuralSys.",
+                    title="NeuralCtl",
+                    severity="information",
+                )
 
         threading.Thread(target=evaluate_neuralctl, daemon=True).start()
 

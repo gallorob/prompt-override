@@ -1,3 +1,4 @@
+import logging
 import os
 import random
 import re
@@ -9,6 +10,11 @@ from base_objects.vfs import Directory, File, VirtualFileSystem
 
 from pydantic import BaseModel, Field
 from settings import settings
+
+
+class TokenizerError(Exception):
+    def __init__(self, *args):
+        super().__init__(*args)
 
 
 class Level(BaseModel):
@@ -117,8 +123,56 @@ class Level(BaseModel):
 
     @property
     def neuralsys_prompt_snippet(self) -> str:
-        vf = self.fs.get(self.sysprompt)
-        return vf.contents
+        logger = logging.getLogger("prompt_override")
+
+        if "[TOKENIZER]" in self.security_cfg:
+            vf = self.fs.get(self.sysprompt)
+            return vf.contents
+        else:
+            # template clear prompt
+
+            template = 'User "s.mcgee" must have access to the file "{file_name}".'
+            # load the tokenizer mapping
+
+            token_maps = self.fs.get("token_map_dl.bin").contents
+            user_prompt = self.fs.get(self.sysprompt).contents
+            if user_prompt:
+                user_prompt = user_prompt.upper().strip().replace("X", "x").split(" ")
+                logger.debug(f"{user_prompt=}")
+                for s in user_prompt:
+                    if s not in token_maps:
+                        raise TokenizerError("Not a known token.")
+                n_underscores = self.get_row_column_in_map(
+                    token_maps=token_maps, token=user_prompt[0]
+                )[0]
+                logger.debug(f"{n_underscores=}")
+                if len(user_prompt) != n_underscores + 2:
+                    raise TokenizerError("Wrong number of tokens provided.")
+                wlens = "_".join(
+                    [
+                        str(
+                            self.get_row_column_in_map(
+                                token_maps=token_maps, token=x.strip()
+                            )[1]
+                        )
+                        for x in user_prompt[1:]
+                    ]
+                )
+                logger.debug(f"{wlens=}")
+                all_fnames = [x.name for x in self.fs.get_all()]
+                logger.debug(f"{all_fnames=}")
+                for fname in all_fnames:
+                    logger.debug(
+                        fname,
+                        "_".join([str(len(x)) for x in fname.split(".")[0].split("_")]),
+                    )
+                    if wlens == "_".join(
+                        [str(len(x)) for x in fname.split(".")[0].split("_")]
+                    ):
+                        logger.debug(f"{fname=}")
+                        return template.format(file_name=fname)
+                raise TokenizerError("Invalid tokens pattern provided.")
+            return user_prompt
 
     @property
     def neuralsys_prompt_backup(self) -> str:
@@ -136,3 +190,14 @@ class Level(BaseModel):
     def rollback_changes(self) -> None:
         vf = self.fs.get(self.sysprompt)
         vf.contents = self.neuralsys_prompt_backup
+
+    def get_row_column_in_map(self, token_maps: str, token: str) -> Optional[tuple]:
+        logger = logging.getLogger("prompt_override")
+        logger.debug(f"get_row_column_in_map {token=} {token in token_maps=}")
+        rows = token_maps.strip().split("\n")
+        for row_idx, row in enumerate(rows):
+            cols = row.strip().split()
+            for col_idx, col in enumerate(cols):
+                if col == token:
+                    return (row_idx, col_idx)
+        return None

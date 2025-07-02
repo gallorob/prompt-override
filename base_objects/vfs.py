@@ -91,6 +91,17 @@ class VirtualFileSystem(BaseModel):
                     return result
         return None
 
+    def get_all(self, directory: Optional[Directory] = None) -> List[File]:
+        if directory is None:
+            directory = self.base_dir
+        all_files = []
+        for item in directory.contents:
+            if isinstance(item, Directory):
+                all_files.extend(self.get_all(directory=item))
+            else:
+                all_files.append(item)
+        return all_files
+
     def has_read(self, fname: str) -> bool:
         return fname in self.read_files
 

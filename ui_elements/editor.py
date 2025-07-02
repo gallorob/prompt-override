@@ -5,40 +5,9 @@ from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.containers import Container, Horizontal
 from textual.screen import ModalScreen
-from textual.widgets import Footer, Header, Static, TextArea
+from textual.widgets import Footer, Header
 
-
-class EditorTextArea(TextArea):
-    def __init__(
-        self,
-        *args,
-        on_cursor_moved: Optional[Callable[[tuple[int, int]], None]] = None,
-        **kwargs,
-    ):
-        self.on_cursor_moved = on_cursor_moved
-        self._last_cursor_location = (0, 0)  # Initialize before super().__init__
-        super().__init__(*args, **kwargs)
-
-    def _watch_selection(self, old, new):
-        # Call the callback if the cursor location changed
-
-        if self.cursor_location != self._last_cursor_location:
-            self._last_cursor_location = self.cursor_location
-            if self.on_cursor_moved:
-                self.on_cursor_moved(self.cursor_location)
-        super()._watch_selection(old, new)
-
-
-class EditorStatusBar(Static):
-    def __init__(self):
-        super().__init__("")
-        self.update_status(1, 1, 0)
-
-    def update_status(self, line: int, col: int, sel_len: int):
-        parts = [f"Ln {line}", f"Col {col}"]
-        if sel_len > 0:
-            parts.append(f"Sel {sel_len}")
-        self.update("; ".join(parts))
+from ui_elements.extended_widgets import ExtendedTextArea, StatusBar
 
 
 class EditorScreen(ModalScreen):
@@ -46,13 +15,13 @@ class EditorScreen(ModalScreen):
         super().__init__()
         self.file_obj = file_obj
         self.bak = bak
-        self.text_area = EditorTextArea(
+        self.text_area = ExtendedTextArea(
             self.file_obj.contents,
             show_line_numbers=True,
             on_cursor_moved=self._on_cursor_moved,
         )
         self.text_area.theme = "vscode_dark"
-        self.status_bar = EditorStatusBar()
+        self.status_bar = StatusBar()
         self.title = "Editor"
         self.sub_title = self.file_obj.name
 
@@ -64,7 +33,7 @@ class EditorScreen(ModalScreen):
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True, icon="")
         yield Container(
-            Horizontal(self.text_area, id="editor-text-area"),
+            Horizontal(self.text_area, id="extended-text-area"),
             Horizontal(self.status_bar),
             id="editor",
         )
