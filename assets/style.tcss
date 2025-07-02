@@ -25,6 +25,10 @@ Screen {
     width: 50%;
 }
 
+#editor-text-area {
+    height: 98%;
+}
+
 .explorer-container {
     height: 85%;
 }
