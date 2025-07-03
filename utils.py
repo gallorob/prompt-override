@@ -3,7 +3,7 @@ import logging
 from hashlib import sha224
 from typing import Any, Dict, Optional
 
-from requests import get, post, Response
+from requests import ConnectionError, get, post, Response
 from settings import settings
 
 
