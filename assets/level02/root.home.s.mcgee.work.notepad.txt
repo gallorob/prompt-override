@@ -1,0 +1,3 @@
+First column is used for setting the first token?
+
+Counting characters seems to have an effect for some of the commands.

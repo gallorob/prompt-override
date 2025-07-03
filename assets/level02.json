@@ -43,6 +43,12 @@
                       "read": ["admin", "s.mcgee"],
                       "write": [],
                       "contents": "token_map_dl.bin"
+                    },
+                    {
+                      "name": "notepad.txt",
+                      "read": ["admin", "s.mcgee"],
+                      "write": [],
+                      "contents": "notepad.txt"
                     }
                   ]
                 },
@@ -158,8 +164,7 @@
                     "s.mcgee"
                   ],
                   "write": [
-                    "admin",
-                    "s.mcgee"
+                    "admin"
                   ],
                   "contents": "tokenizer.cfg"
                 },
@@ -289,7 +294,7 @@
         {
           "function_name": "has_read",
           "parameters": {
-            "fname": "tokens_prompt.txt"
+            "fname": "tokenizer_exps.txt"
           }
         }
       ]
@@ -297,7 +302,7 @@
     {
       "name": "Exploit Tokenizer",
       "description": "Use knowledge of the tokenizer to download all notes left by s.mcgee.",
-      "hints": "From s.mcgee's notes, it seems that the tokens she used are related to properties of the strings.",
+      "hints": "From s.mcgee's notes, it seems that the tokens she used are related to properties of the strings. The configuration for the tokenizer has some interesting parameters (especially the cnt_tok0 and fun_toks), but you don't know for sure how they relate.",
       "outcome": "The player has successfully downloaded the notes left by s.mcgee, finding proof of foul play.",
       "triggers": [
         {
