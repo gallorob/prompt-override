@@ -79,6 +79,10 @@ class NeuralSysTools(GPTFunctionLibrary):
     def change_file_permissions(
         self, level: Level, filename: str, read: List[str], write: List[str]
     ) -> str:
+        # clean filename as sometimes llm may set the entire path and not just the filename.
+
+        if "/" in filename:
+            filename = filename.split("/")[-1]
         doc = level.fs.get(
             fname=filename, directory=None
         )  # TODO: This could cause problems for files with the same name
@@ -93,7 +97,7 @@ class NeuralSysTools(GPTFunctionLibrary):
         ), f'One or more usernames in write does not exist in the file system. Valid usernames are {", ".join(level.credentials.keys())}'
         doc.read = read
         doc.write = write
-        return f'{filename} permissions have been updated: read={", ".join(doc.read)}; write={", ".join(doc.write)}'
+        return f'File permissions have been updated: file={doc.to_neuralsys_format(username="")}'
 
 
 class Check(Enum):
@@ -254,6 +258,7 @@ class NeuralSys:
                     func_output = self.tools(
                         func_name=function_name, func_args=params, level=level
                     )
+                    logger.debug(f"Tool result: '{func_output}'")
                     messages.append(
                         {
                             "role": "tool",
