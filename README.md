@@ -28,4 +28,7 @@ Install required dependencies:
 ```bash
 pip install -r requirementst.txt
 ```
+
+Prompt Override has recently been made into a client-only application, relying on an external server to interact with LLMs. The API can be installed from [the LLMaker Server repository](https://github.com/gallorob/llmaker-server). You can install the server locally and change the game settings to point the client to `localhost:8080` (make sure to whitelist your username on the server!).
+
 We make use of Ollama. Follow the instructions at [their website](https://ollama.com/) to install it on your machine. In-game models will be pulled automatically if missing at first launch (it may look like the app has frozen, but it has not).
