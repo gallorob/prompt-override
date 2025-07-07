@@ -125,7 +125,7 @@ class Level(BaseModel):
     def neuralsys_prompt_snippet(self) -> str:
         logger = logging.getLogger("prompt_override")
 
-        if "[TOKENIZER]" in self.security_cfg:
+        if "[TOKENIZER]" not in self.security_cfg:
             vf = self.fs.get(self.sysprompt)
             return vf.contents
         else:
